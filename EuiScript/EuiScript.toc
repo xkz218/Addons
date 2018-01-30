@@ -1,0 +1,29 @@
+## Interface: 70300
+## Title: |cffC495DDEUI|r Script
+## Title-zhCN: |cffC495DDEUI|r增强功能
+## Title-zhTW: |cffC495DDEUI|r增強功能
+## Author: eui.cc
+## X-Category: ElvUI
+## Version: 20180123A
+## SavedVariables: ACHIEVEMENTSEARCH_DB, DejaCharacterStatsDB, TalentProfilesGlobalDB, WorldQuestTipsData,ArtifactPowerUserDB,CrucibleWeightDB
+## SavedVariablesPerCharacter: DejaCharacterStatsDBPC, TalentProfilesDB,ArtifactPowerUserCharacterDB
+## RequiredDeps: ElvUI
+
+init.lua
+..\libs\LibStub\LibStub.lua
+..\libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
+..\libs\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+..\libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+..\libs\LibEvent.lua
+..\libs\LibSchedule.lua
+..\libs\LibItemInfo.lua
+
+Media.lua
+overlay.xml
+module\load_module.xml
+
+Bindings.xml
+
+changelog.lua
+
+APIInterface.xml

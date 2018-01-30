@@ -1,0 +1,18 @@
+## Interface: 70200
+## Version: v1.2.5
+## Title: WardrobeSort
+## Notes: Sorts the Wardrobe
+## Title-zhCN: 幻化物品排序增强WardrobeSort
+## Notes-zhCN: 增加多种幻化页的排序方式，按照画面表现/颜色/来源/物品等级等排序
+## Title-zhTW: 幻化物品排序增強WardrobeSort
+## Notes-zhTW: 增加多種幻化頁的排序方式，按照畫面表現/顏色/來源/物品等級等排序
+## Author: Ketho @ EU-Boulderfist
+## SavedVariables: WardrobeSortDB
+## LoadOnDemand: 1
+## LoadWith: Blizzard_Collections
+
+..\libs\LibStub\LibStub.lua
+..\libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+
+FileData.lua
+WardrobeSort.lua

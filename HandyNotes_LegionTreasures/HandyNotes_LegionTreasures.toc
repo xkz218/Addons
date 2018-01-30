@@ -1,0 +1,20 @@
+﻿## Interface: 70300
+## Title: |cffC495DDEUI|rHandyNotes_LegionTreasures
+## Title-zhCN: |cffC495DDEUI|r地图标记-破碎群岛宝藏模块
+## Title-zhTW: |cffC495DDEUI|r地圖標記-破碎群島定期模塊
+## Notes: Where are the hidden treasures in Legion?
+## Author: Kemayo
+## Version: v12
+## DefaultState: enabled
+## X-Category: Map
+## X-eMail: kemayo @ gmail DOT com
+## SavedVariables: HandyNotes_LegionTreasuresDB
+## RequiredDeps: HandyNotes
+
+..\libs\LibStub\LibStub.lua
+..\libs\LibUIDropDownMenu\LibUIDropDownMenu.xml
+
+handler.lua
+config.lua
+Treasure.lua
+Rares.lua

@@ -1,0 +1,23 @@
+tag 95d08f2f567bfa63b980473c3b105799cd8a1428 2.0.7
+Author:	Rainrider <rainrider.wow@gmail.com>
+Date:	Fri Mar 31 16:28:20 2017 +0200
+
+Version 2.0.7
+
+Updated for patch 7.2
+Not compatible with 7.1
+
+commit 3ec8a541309c5a3d402cd1c3ecfaa9eb82169fed
+Author: Rainrider <rainrider.wow@gmail.com>
+Date:   Fri Mar 31 16:25:03 2017 +0200
+
+    Minor change in how numbers are scaled down
+
+commit 23255ef42862a21953106fb86dde692322c43612
+Author: Rainrider <rainrider.wow@gmail.com>
+Date:   Fri Mar 31 14:23:32 2017 +0200
+
+    core: add the traitID to trait tooltips in debug mode
+    
+    Update for changed C_ArtifactUI.GetPowerInfo()
+

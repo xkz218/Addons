@@ -1,0 +1,64 @@
+﻿## Interface: 70300
+## Title: |cffff0000GSE2:|r |cFF00D1FFGnome Sequencer Enhanced|r
+## Title-zhCN: |cffC495DDEUI|r |cFF00D1FF一键宏增强版|r 核心
+## Title-zhTW: |cffC495DDEUI|r |cFF00D1FF一鍵宏增強版|r 核心
+## Notes: Allows you to execute a sequence of macros without stopping on unusable spells.
+## Author: TimothyLuke
+## Version: 2203
+## SavedVariables: GSEOptions GSELibrary
+## OptionalDeps: WeakAuras
+## Dependencies: ElvUI
+## X-Revision: ElvUI
+## X-WoWI-ID: 23921
+# Lib
+embeds.xml
+..\libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+..\libs\LibQTip-1.0\LibQTip-1.0.lua
+lib\AceGUI-3.0-Completing-EditBox\AceGUI-3.0-Completing-EditBox.lua
+..\libs\LibSharedMedia-3.0\LibSharedMedia-3.0\LibSharedMedia-3.0.lua
+Lib\AceGUI-3.0-Selectable-Panel\AceGUI-3.0-Selectable-Panel.lua
+
+
+#Setup Localisation
+Localization\ModL_enUS.lua
+Localization\ModL_zhCN.lua
+Localization\ModL_zhTW.lua
+
+# Startup
+API\Init.lua
+API\Statics.lua
+API\InitialOptions.lua
+
+# Spells Language Strings
+Localization\enUS.lua
+Localization\enUSHash.lua
+Localization\enUSSHADOW.lua
+
+
+#storage and core
+API\StaticPopup.lua
+API\StringFunctions.lua
+API\CharacterFunctions.lua
+SampleMacros.lua
+API\Storage.lua
+API\Translator.lua
+API\Plugins.lua
+API\Serialisation.lua
+API\Options.lua
+API\Events.lua
+
+
+#GUI
+GUI\Import.lua
+GUI\Export.lua
+GUI\DebugWindow.lua
+GUI\Transmission.lua
+GUI\VersionManagement.lua
+GUI\Recorder.lua
+GUI\Editor.lua
+GUI\Viewer.lua
+GUI\GUIFunctions.lua
+GUI\CompressSequence.lua
+
+#LDB
+LDB\LDBProvider.lua
