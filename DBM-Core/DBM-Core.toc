@@ -17,7 +17,7 @@
 ## DefaultState: enabled
 ## Author: Tandanu and Nitram
 ## X-Website: http://www.deadlybossmods.com
-## Version: 7.3.17-23-g53c0a8f
+## Version: 7.3.25-10-ga03a9f301
 ## X-Revision: ElvUI
 
 #@no-lib-strip@
@@ -36,8 +36,6 @@ DBM-Core.lua
 DBM-Arrow.lua
 DBM-Flash.lua
 DBM-RangeCheck.lua
-DBM-BossHealth.lua
-DBM-BossHealth.xml
 DBM-InfoFrame.lua
 DBM-HudMap.lua
 DBM-Nameplate.lua

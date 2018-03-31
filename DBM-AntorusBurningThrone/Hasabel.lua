@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod(1985, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17145 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17412 $"):sub(12, -3))
 mod:SetCreatureID(122104)
 mod:SetEncounterID(2064)
 mod:DisableESCombatDetection()--Remove if blizz fixes clicking portals causing this event to fire (even though boss isn't engaged)
@@ -44,15 +44,15 @@ local Nathreza = DBM:EJ_GetSectionInfo(15802)
 --Platform: Nexus
 local warnRealityTear					= mod:NewStackAnnounce(244016, 2, nil, "Tank")
 --Platform: Xoroth
-local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 2)
+local warnXorothPortal					= mod:NewSpellAnnounce(244318, 2, nil, nil, nil, nil, nil, 7)
 local warnAegisofFlames					= mod:NewTargetAnnounce(244383, 3, nil, nil, nil, nil, nil, nil, true)
 local warnAegisofFlamesEnded			= mod:NewEndAnnounce(244383, 1)
 local warnEverburningFlames				= mod:NewTargetAnnounce(244613, 2, nil, false)
 --Platform: Rancora
-local warnRancoraPortal					= mod:NewSpellAnnounce(246082, 2, nil, nil, nil, nil, nil, 2)
+local warnRancoraPortal					= mod:NewSpellAnnounce(246082, 2, nil, nil, nil, nil, nil, 7)
 local warnCausticSlime					= mod:NewTargetAnnounce(244849, 2, nil, false)
 --Platform: Nathreza
-local warnNathrezaPortal				= mod:NewSpellAnnounce(246157, 2, nil, nil, nil, nil, nil, 2)
+local warnNathrezaPortal				= mod:NewSpellAnnounce(246157, 2, nil, nil, nil, nil, nil, 7)
 local warnDelusions						= mod:NewTargetAnnounce(245050, 2, nil, "Healer")
 local warnCloyingShadows				= mod:NewTargetAnnounce(245118, 2, nil, false)
 local warnHungeringGloom				= mod:NewTargetAnnounce(245075, 2, nil, false)
@@ -61,7 +61,7 @@ local warnHungeringGloom				= mod:NewTargetAnnounce(245075, 2, nil, false)
 local specWarnRealityTear				= mod:NewSpecialWarningStack(244016, nil, 2, nil, nil, 1, 6)
 local specWarnRealityTearOther			= mod:NewSpecialWarningTaunt(244016, nil, nil, nil, 1, 2)
 local specWarnTransportPortal			= mod:NewSpecialWarningSwitch(244677, "-Healer", nil, 2, 1, 2)
-local specWarnCollapsingWorld			= mod:NewSpecialWarningSpell(243983, nil, nil, nil, 2, 2)
+local specWarnCollapsingWorld			= mod:NewSpecialWarningCount(243983, nil, nil, nil, 2, 2)
 local specWarnFelstormBarrage			= mod:NewSpecialWarningDodge(244000, nil, nil, nil, 2, 2)
 local specWarnFieryDetonation			= mod:NewSpecialWarningInterrupt(244709, "HasInterrupt", nil, 2, 1, 2)
 local specWarnHowlingShadows			= mod:NewSpecialWarningInterrupt(245504, "HasInterrupt", nil, nil, 1, 2)
@@ -117,6 +117,7 @@ mod:AddBoolOption("ShowAllPlatforms", false)
 
 mod.vb.shieldsActive = false
 mod.vb.felBarrageCast = 0
+mod.vb.worldCount = 0
 mod.vb.firstPortal = false
 local playerPlatform = 1--1 Nexus, 2 Xoroth, 3 Rancora, 4 Nathreza
 local mindFog, aegisFlames, felMiasma = DBM:GetSpellInfo(245099), DBM:GetSpellInfo(244383), DBM:GetSpellInfo(244826)
@@ -178,6 +179,7 @@ function mod:OnCombatStart(delay)
 	self.vb.shieldsActive = false
 	self.vb.firstPortal = false
 	self.vb.felBarrageCast = 0
+	self.vb.worldCount = 0
 	playerPlatform = 1--Nexus
 	table.wipe(nexusPlatform)
 	table.wipe(xorothPlatform)
@@ -204,6 +206,7 @@ end
 function mod:SPELL_CAST_START(args)
 	local spellId = args.spellId
 	if spellId == 243983 then
+		self.vb.worldCount = self.vb.worldCount + 1
 		if self:IsEasy() then
 			timerCollapsingWorldCD:Start(37.7)--37, but offen delayed by ICD
 			countdownCollapsingWorld:Start(37.8)
@@ -215,7 +218,7 @@ function mod:SPELL_CAST_START(args)
 			countdownCollapsingWorld:Start(31.9)
 		end
 		if self.Options.ShowAllPlatforms or playerPlatform == 1 then--Actually on nexus platform
-			specWarnCollapsingWorld:Show()
+			specWarnCollapsingWorld:Show(self.vb.worldCount)
 			specWarnCollapsingWorld:Play("watchstep")
 		end
 		updateAllTimers(self, 9.7)

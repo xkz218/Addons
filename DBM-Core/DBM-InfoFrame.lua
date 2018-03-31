@@ -797,7 +797,7 @@ end
 ---------------
 --  Methods  --
 ---------------
---Arg 1: spellID, health/powervalue, customfunction. Arg 2: TankIgnore, Powertype, SortFunction, totalAbsorb. Arg 3: SpellFilter, UseIcon. Arg 4: disable onUpdate
+--Arg 1: spellName, health/powervalue, customfunction. Arg 2: TankIgnore, Powertype, SortFunction, totalAbsorb. Arg 3: SpellFilter, UseIcon. Arg 4: disable onUpdate
 function infoFrame:Show(maxLines, event, ...)
 	currentMapId = select(4, UnitPosition("player"))
 	if DBM.Options.DontShowInfoFrame and (event or 0) ~= "test" then return end
@@ -817,6 +817,10 @@ function infoFrame:Show(maxLines, event, ...)
 		sortMethod = 3
 	elseif event == "health" or event == "playerdebuffremaining" then
 		sortMethod = 2	-- Sort lowest first
+	elseif event == "playerdebuffstacks" and value[2] then
+		if type(value[2]) == "number" then
+			sortMethod = value[2]
+		end
 	else
 		sortMethod = 1
 	end
@@ -825,7 +829,7 @@ function infoFrame:Show(maxLines, event, ...)
 	--this also allows spell name to be given by mod, since value 1 verifies it's a number
 	if type(value[1]) == "number" and event ~= "health" and event ~= "function" and event ~= "playertargets" and event ~= "playeraggro" and event ~= "playerpower" and event ~= "enemypower" and event ~= "test" then
 		--value[1] = DBM:GetSpellInfo(value[1])
-		error("DBM-InfoFrame: Must pass spell NAME, not ID number. Report boss and this error to DBM author", 2)
+		error("DBM-InfoFrame: Must pass spell NAME, not ID number. Report boss and this error to DBM author (MysticalOS)", 2)
 	end
 
 	if events[currentEvent] then

@@ -12,12 +12,12 @@
 ## Notes-ruRU: Сканер миникарты. Визуально оповещает вас с помощью кнопки и миниатюры, а также воспроизводит звук каждый раз, когда на миникарте появляется редкий НИП, сокровище/сундук или событие
 ## Notes-koKR: 미니맵 스캐너. 매번 희귀 NPC, 보물/상자 또는 이벤트를 소리와 함께 시각적으로 미니 맵에 표시하여 알립니다.
 ## Author: maqjav, Maciza-Tyrande
-## Version: 4.0.3
+## Version: 4.0.7
 ## SavedVariables: RareScannerDB
 ## OptionalDeps: Ace3
 ## X-Category: Miscellaneous
 ## X-Credits: maqjav, Maciza-Tyrande
-## X-Date: Jan. 21, 2017
+## X-Date: Mar. 18, 2018
 ## X-Email: maqjav@gmail.com
 ## X-License: GPLv2
 ## X-Localizations: enUS, enGB, zhCN, zhTW

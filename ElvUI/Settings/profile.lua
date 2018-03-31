@@ -700,7 +700,6 @@ P["nameplates"] = {
 --Auras
 P['auras'] = {
 	['font'] = 'Homespun',
-	['fontSize'] = 10,
 	['fontOutline'] = 'MONOCHROMEOUTLINE',
 	['countYOffset'] = 0,
 	['countXOffset'] = 0,
@@ -717,6 +716,8 @@ P['auras'] = {
 		['sortDir'] = '-',
 		['seperateOwn'] = 1,
 		['size'] = 32,
+		["countFontsize"] = 10,
+		["durationFontSize"] = 10,
 	},
 	['debuffs'] = {
 		['growthDirection'] = 'LEFT_DOWN',
@@ -728,6 +729,8 @@ P['auras'] = {
 		['sortDir'] = '-',
 		['seperateOwn'] = 1,
 		['size'] = 32,
+		["countFontsize"] = 10,
+		["durationFontSize"] = 10,
 	},
 }
 
@@ -776,6 +779,7 @@ P['chat'] = {
 	['tabFontSize'] = 12,
 	['tabFontOutline'] = 'NONE',
 	["copyChatLines"] = false,
+	['useBTagName'] = false,
 }
 
 --Datatexts
@@ -980,6 +984,12 @@ P['unitframe'] = {
 			},
 			['WARLOCK'] = {r = 148/255, g = 130/255, b = 201/255}
 		},
+		["debuffHighlight"] = {
+			["Magic"] = {r = 0.2, g = 0.6, b = 1, a = 0.45},
+			["Curse"] = {r = 0.6, g = 0, b = 1, a = 0.45},
+			["Disease"] = {r = 0.6, g = 0.4, b = 0, a = 0.45},
+			["Poison"] = {r = 0, g = 0.6, b = 0, a = 0.45},
+		},
 	},
 
 	['units'] = {
@@ -991,8 +1001,6 @@ P['unitframe'] = {
 			['lowmana'] = 30,
 			['combatfade'] = false,
 			['healPrediction'] = true,
-			['restIcon'] = true,
-			["combatIcon"] = true,
 			['threatStyle'] = 'GLOW',
 			["smartAuraPosition"] = "DISABLED",
 			["colorOverride"] = "USE_DEFAULT",
@@ -1041,6 +1049,26 @@ P['unitframe'] = {
 				['text_format'] = '||cFFB04F4F[pvptimer][mouseover]||r',
 				['xOffset'] = 0,
 				['yOffset'] = 0,
+			},
+			["RestIcon"] = {
+				["enable"] = true,
+				["defaultColor"] = true,
+				["color"] = {r = 1, g = 1, b = 1, a = 1},
+				["anchorPoint"] = "TOPLEFT",
+				["xOffset"] = -3,
+				["yOffset"] = 6,
+				["size"] = 22,
+				["texture"] = "DEFAULT",
+			},
+			["CombatIcon"] = {
+				["enable"] = true,
+				["defaultColor"] = true,
+				["color"] = {r = 1, g = 0.2, b = 0.2, a = 1},
+				["anchorPoint"] = "CENTER",
+				["xOffset"] = 0,
+				["yOffset"] = 0,
+				["size"] = 20,
+				["texture"] = "DEFAULT",
 			},
 			["pvpIcon"] = {
 				["enable"] = false,
@@ -1115,12 +1143,14 @@ P['unitframe'] = {
 				['enable'] = true,
 				['fill'] = 'fill',
 				['height'] = 10,
+				['autoHide'] = false,
+				["additionalPowerText"] = true,
 				['detachFromFrame'] = false,
 				['detachedWidth'] = 250,
-				['autoHide'] = false,
 				["parent"] = "FRAME",
 				["verticalOrientation"] = false,
-				["additionalPowerText"] = true,
+				["orientation"] = 'HORIZONTAL',
+				["spacing"] = 1,
 				["strataAndLevel"] = {
 					["useCustomStrata"] = false,
 					["frameStrata"] = "LOW",
@@ -1142,6 +1172,7 @@ P['unitframe'] = {
 				['sort'] = 'TIME_REMAINING',
 				["uniformThreshold"] = 0,
 				["yOffset"] = 0,
+				["spacing"] = 0,
 			},
 			['raidicon'] = {
 				['enable'] = true,
@@ -1285,6 +1316,7 @@ P['unitframe'] = {
 				['sort'] = 'TIME_REMAINING',
 				["uniformThreshold"] = 0,
 				["yOffset"] = 0,
+				["spacing"] = 0,
 			},
 			['raidicon'] = {
 				['enable'] = true,
@@ -1584,6 +1616,7 @@ P['unitframe'] = {
 				['sort'] = 'TIME_REMAINING',
 				["uniformThreshold"] = 0,
 				["yOffset"] = 0,
+				["spacing"] = 0,
 			},
 			['raidicon'] = {
 				['enable'] = true,

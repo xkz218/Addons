@@ -5,7 +5,7 @@ local configVersion = 1
 local configDefaults = {
 	progressTooltip = true,
 	progressFormat = 1,
-	autoGossip = false, --by eui.cc
+	autoGossip = false,  --by eui.cc
 	cosRumors = false,
 	silverGoldTimer = false,
 	splitsFormat = 1,
@@ -21,12 +21,12 @@ local callbacks = {}
 
 local My_UIDropDownMenu_SetSelectedValue, My_UIDropDownMenu_GetSelectedValue, My_UIDropDownMenu_CreateInfo, My_UIDropDownMenu_AddButton, My_UIDropDownMenu_Initialize, My_UIDropDownMenuTemplate
 function Config:InitializeDropdown()
-	My_UIDropDownMenu_SetSelectedValue = L_UIDropDownMenu_SetSelectedValue or UIDropDownMenu_SetSelectedValue
-	My_UIDropDownMenu_GetSelectedValue = L_UIDropDownMenu_GetSelectedValue or UIDropDownMenu_GetSelectedValue
-	My_UIDropDownMenu_CreateInfo = L_UIDropDownMenu_CreateInfo or UIDropDownMenu_CreateInfo
-	My_UIDropDownMenu_AddButton = L_UIDropDownMenu_AddButton or UIDropDownMenu_AddButton
-	My_UIDropDownMenu_Initialize = L_UIDropDownMenu_Initialize or UIDropDownMenu_Initialize
-	My_UIDropDownMenuTemplate = L_UIDropDownMenu_Initialize and "L_UIDropDownMenuTemplate" or "UIDropDownMenuTemplate"
+	My_UIDropDownMenu_SetSelectedValue = Lib_UIDropDownMenu_SetSelectedValue or UIDropDownMenu_SetSelectedValue
+	My_UIDropDownMenu_GetSelectedValue = Lib_UIDropDownMenu_GetSelectedValue or UIDropDownMenu_GetSelectedValue
+	My_UIDropDownMenu_CreateInfo = Lib_UIDropDownMenu_CreateInfo or UIDropDownMenu_CreateInfo
+	My_UIDropDownMenu_AddButton = Lib_UIDropDownMenu_AddButton or UIDropDownMenu_AddButton
+	My_UIDropDownMenu_Initialize = Lib_UIDropDownMenu_Initialize or UIDropDownMenu_Initialize
+	My_UIDropDownMenuTemplate = Lib_UIDropDownMenu_Initialize and "Lib_UIDropDownMenuTemplate" or "UIDropDownMenuTemplate"
 end
 
 local progressFormatValues = { 1, 2, 3, 4, 5, 6 }

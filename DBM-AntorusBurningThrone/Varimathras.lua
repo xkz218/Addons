@@ -1,13 +1,13 @@
 local mod	= DBM:NewMod(1983, "DBM-AntorusBurningThrone", nil, 946)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17183 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17308 $"):sub(12, -3))
 mod:SetCreatureID(122366)
 mod:SetEncounterID(2069)
 mod:SetZone()
 --mod:SetBossHPInfoToHighest()
 mod:SetUsedIcons(1, 3, 4)
-mod:SetHotfixNoticeRev(16945)
+mod:SetHotfixNoticeRev(17238)
 mod.respawnTime = 29
 
 mod:RegisterCombat("combat")
@@ -39,7 +39,7 @@ local warnNecroticEmbrace				= mod:NewTargetAnnounce(244094, 4)
 local warnEchoesofDoom					= mod:NewTargetAnnounce(248732, 3)
 
 --Torments of the Shivarra
-local specWarnGTFO						= mod:NewSpecialWarningGTFO(243968, nil, nil, nil, 1, 2)
+local specWarnGTFO						= mod:NewSpecialWarningGTFO(244005, nil, nil, nil, 1, 2)
 --The Fallen Nathrezim
 local specWarnMisery					= mod:NewSpecialWarningYou(243961, nil, nil, nil, 1, 2)
 local specWarnMiseryTaunt				= mod:NewSpecialWarningTaunt(243961, nil, nil, nil, 1, 2)
@@ -47,7 +47,7 @@ local specWarnDarkFissure				= mod:NewSpecialWarningDodge(243999, nil, nil, nil,
 local specWarnMarkedPrey				= mod:NewSpecialWarningYou(244042, nil, nil, 2, 1, 2)
 local yellMarkedPrey					= mod:NewYell(244042)
 local yellMarkedPreyFades				= mod:NewShortFadesYell(244042)
-local specWarnNecroticEmbrace			= mod:NewSpecialWarningMoveAway(244094, nil, nil, 2, 1, 2)
+local specWarnNecroticEmbrace			= mod:NewSpecialWarningYouPos(244094, nil, nil, 3, 3, 2)
 local yellNecroticEmbrace				= mod:NewPosYell(244094)
 local yellNecroticEmbraceFades			= mod:NewIconFadesYell(244094)
 local specWarnEchoesOfDoom				= mod:NewSpecialWarningYou(248732, nil, nil, nil, 1, 2)
@@ -64,7 +64,7 @@ mod:AddTimerLine(BOSS)
 local timerShadowStrikeCD				= mod:NewCDTimer(8.5, 243960, nil, "Tank", nil, 5, nil, DBM_CORE_TANK_ICON)--8.5-14 (most of time it's 9.7 or more, But lowest has to be used
 local timerDarkFissureCD				= mod:NewCDTimer(32, 243999, nil, nil, nil, 3)--32-33
 local timerMarkedPreyCD					= mod:NewNextTimer(30.3, 244042, nil, nil, nil, 3)
-local timerNecroticEmbraceCD			= mod:NewNextTimer(30.3, 244093, nil, nil, nil, 3)
+local timerNecroticEmbraceCD			= mod:NewNextTimer(30, 244093, nil, nil, nil, 3)
 
 local berserkTimer						= mod:NewBerserkTimer(390)
 
@@ -80,10 +80,12 @@ mod:AddRangeFrameOption("8/10")
 
 mod.vb.currentTorment = 0--Can't antispam, cause it'll just break if someone dies and gets brezzed
 mod.vb.totalEmbrace = 0
+local playerAffected = false
 
 function mod:OnCombatStart(delay)
 	self.vb.currentTorment = 0
 	self.vb.totalEmbrace = 0
+	playerAffected = false
 	timerTormentofFlamesCD:Start(5-delay)
 	timerShadowStrikeCD:Start(9.3-delay)
 	countdownShadowStrike:Start(9.3-delay)
@@ -156,20 +158,27 @@ function mod:SPELL_AURA_APPLIED(args)
 	elseif spellId == 244094 then
 		self.vb.totalEmbrace = self.vb.totalEmbrace + 1
 		if self.vb.totalEmbrace >= 3 then return end--Once it's beyond 2 players, consider it a wipe and throttle messages
+		if self.Options.SetIconEmbrace then
+			self:SetIcon(args.destName, self.vb.totalEmbrace+2)--Should be BW compatible, for most part.
+		end
 		if args:IsPlayer() then
-			specWarnNecroticEmbrace:Show()
-			specWarnNecroticEmbrace:Play("scatter")
-			local icon = self.vb.totalEmbrace+2
-			yellNecroticEmbrace:Yell(self.vb.totalEmbrace, icon, icon)
-			yellNecroticEmbraceFades:Countdown(6, 3, icon)
-			if self.Options.RangeFrame then
-				DBM.RangeCheck:Show(10)
+			if not playerAffected then
+				playerAffected = true
+				local icon = self.vb.totalEmbrace+2
+				specWarnNecroticEmbrace:Show(self:IconNumToTexture(icon))
+				if self:IsMythic() and not self:IsTank() then
+					specWarnNecroticEmbrace:Play("mm"..icon)
+				else
+					specWarnNecroticEmbrace:Play("targetyou")
+				end
+				yellNecroticEmbrace:Yell(self.vb.totalEmbrace, icon, icon)
+				yellNecroticEmbraceFades:Countdown(6, 3, icon)
+				if self.Options.RangeFrame then
+					DBM.RangeCheck:Show(10)
+				end
 			end
 		else
 			warnNecroticEmbrace:CombinedShow(0.5, args.destName)--Combined message because even if it starts on 1, people are gonna fuck it up
-		end
-		if self.Options.SetIconEmbrace then
-			self:SetIcon(args.destName, self.vb.totalEmbrace+2)--Should be BW compatible, for most part.
 		end
 	elseif spellId == 248732 then
 		warnEchoesofDoom:CombinedShow(0.5, args.destName)--In case multiple shadows up
@@ -213,6 +222,7 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif spellId == 244094 then
 		self.vb.totalEmbrace = self.vb.totalEmbrace - 1
 		if args:IsPlayer() then
+			playerAffected = false
 			yellNecroticEmbraceFades:Cancel()
 			if self.Options.RangeFrame then
 				DBM.RangeCheck:Show(8)

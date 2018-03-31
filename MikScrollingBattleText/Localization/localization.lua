@@ -32,13 +32,13 @@ L.COMMAND_SHOWVER	= "version"
 L.COMMAND_HELP		= "help"
 
 L.COMMAND_USAGE = {
- "Usage: " .. MikSBT.COMMAND .. " <command> [params]",
- " Commands:",
- "  " .. L.COMMAND_RESET .. " - Reset the current profile to the default settings.",
- "  " .. L.COMMAND_DISABLE .. " - Disables the mod.",
- "  " .. L.COMMAND_ENABLE .. " - Enables the mod.",
- "  " .. L.COMMAND_SHOWVER .. " - Shows the current version.",
- "  " .. L.COMMAND_HELP .. " - Show the command usage.",
+	"Usage: " .. MikSBT.COMMAND .. " <command> [params]",
+	" Commands:",
+	"  " .. L.COMMAND_RESET .. " - Reset the current profile to the default settings.",
+	"  " .. L.COMMAND_DISABLE .. " - Disables the mod.",
+	"  " .. L.COMMAND_ENABLE .. " - Enables the mod.",
+	"  " .. L.COMMAND_SHOWVER .. " - Shows the current version.",
+	"  " .. L.COMMAND_HELP .. " - Show the command usage.",
 }
 
 
@@ -74,6 +74,8 @@ L.MSG_COMBAT					= "Combat"
 L.MSG_DISPEL					= "Dispel"
 L.MSG_CP						= "CP"
 L.MSG_CHI_FULL					= "Full Chi"
+L.MSG_AC						= "Arcane Charge"
+L.MSG_AC_FULL					= "Full Arcane Charges"
 L.MSG_CP_FULL					= "Finish It"
 L.MSG_HOLY_POWER_FULL			= "Full Holy Power"
 L.MSG_SHADOW_ORBS_FULL			= "Full Shadow Orbs"

@@ -43,10 +43,10 @@ function AS:Skillet()
 		if SkilletDoDisenchant then SkinButton(SkilletDoDisenchant) end
 		if SkilletDoMilling then SkinButton(SkilletDoMilling) end
 
-		if 2259 then SkinButton(2259) end -- Alchemy	
+		if 2259 then SkinButton(2259) end -- Alchemy
 		if 2018 then SkinButton(2018) end -- Blacksmithing
 		if 7411 then SkinButton(7411) end -- Enchanting
-		if 4036 then SkinButton(4036) end -- Engineering	
+		if 4036 then SkinButton(4036) end -- Engineering
 		if 45357 then SkinButton(45357) end -- Inscription
 		if 25229 then SkinButton(25229) end -- Jewelcrafting
 		if 2108 then SkinButton(2108) end -- Leatherworking
@@ -66,7 +66,7 @@ function AS:Skillet()
 		SkilletShowOptionsButton:SetHeight(16)
 		SkilletShowOptionsButton:SetWidth(12)
 		SkilletShowOptionsButton:SetPoint('RIGHT', SkilletFrameCloseButton, 'LEFT', 3, 0)
-		
+
 		if not SkilletShowOptionsButton.text then
 			SkilletShowOptionsButton.text = SkilletShowOptionsButton:CreateFontString(nil, 'OVERLAY')
 			SkilletShowOptionsButton.text:SetFont(AS.Font, 12, 'OUTLINE')
@@ -91,24 +91,9 @@ function AS:Skillet()
 			AS:SkinButton(_G['SkilletPluginDropdown'..index])
 			index = index + 1
 		end
-	end	
+	end
 
 	local function SkilletFrameOnShow(self)
-		local StripAllTextures = {
-			'SkilletFrame',
-			'SkilletSkillListParent',
-			'SkilletReagentParent',
-			'SkilletQueueParent',
-			'SkilletRecipeNotesFrame',
-			'SkilletQueueManagementParent',
-			'SkilletSkillTooltip',
-			'SkilletStandalonQueue',
-		}
-
-		for _, object in pairs(StripAllTextures) do
-			AS:StripTextures(_G[object])
-		end	
-
 		local SetTemplateD = {
 			'SkilletSkillListParent',
 			'SkilletReagentParent',
@@ -120,39 +105,19 @@ function AS:Skillet()
 			'SkilletFrame',
 			'SkilletRecipeNotesFrame',
 			'SkilletSkillTooltip',
-			'SkilletStandalonQueue',
+			'SkilletStandaloneQueue',
 			'SkilletIgnoreList',
-		}	
+		}
 
 		for _, object in pairs(SetTemplateD) do
-			AS:SkinFrame(_G[object],'Default')
-		end	
+			AS:SkinFrame(_G[object], 'Default')
+		end
 
 		for _, object in pairs(SetTemplateT) do
 			AS:SkinFrame(_G[object])
-		end	
+		end
 
 		AS:SkinCloseButton(SkilletNotesCloseButton)
-		-- SkilletSkillListParent:SetPoint('TOPLEFT', SkilletFrame, 'TOPLEFT', 5, -100)
-		-- SkilletRankFrame:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -57)
-		-- SkilletRankFrameRed:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -70)
-		-- SkilletRankFrameOrange:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -70)
-		-- SkilletRankFrameYellow:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -70)
-		-- SkilletRankFrameGreen:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -70)
-		-- SkilletRankFrameGray:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', -12, -70)
-		-- SkilletRecipeGroupDropdown:SetPoint('BOTTOMLEFT', SkilletSkillListParent, 'TOPLEFT', 45, 43)
-		-- SkilletRecipeGroupOperations:SetPoint('LEFT', SkilletRecipeGroupDropdownButton, 'RIGHT', 4, 0)
-		-- SkilletSortAscButton:SetPoint('LEFT', SkilletSortDropdownButton, 'RIGHT', 4, 0)
-		-- SkilletSortDescButton:SetPoint('LEFT', SkilletSortDropdownButton, 'RIGHT', 4, 0)
-		-- SkilletSearchFilterClear:SetPoint('LEFT', SkilletFilterBox, 'RIGHT', -2, 0)
-		-- SkilletQueueSaveButton:SetPoint('LEFT', SkilletQueueSaveEditBox, 'RIGHT', 5, 0)
-		-- SkilletQueueLoadButton:SetPoint('LEFT', SkilletQueueLoadDropdownButton, 'RIGHT', 5, 0)
-		-- SkilletQueueDeleteButton:SetPoint('LEFT', SkilletQueueLoadButton, 'RIGHT', 2, 0)
-		-- SkilletHideUncraftableRecipes:SetPoint('BOTTOMRIGHT', SkilletSkillListParent, 'TOPRIGHT', -5, 5)
-		-- SkilletFrameCloseButton:ClearAllPoints()
-		-- SkilletFrameCloseButton:SetPoint('TOPRIGHT', SkilletFrame, 'TOPRIGHT', 0, 0)
-		-- SkilletTradeSkillLinkButton:SetPoint('RIGHT', SkilletShowOptionsButton, 'LEFT', 0, 0)
-		-- SkilletIgnoredMatsButton:SetPoint('RIGHT', SkilletQueueManagementButton, 'LEFT', -5, 0)
 
 		AS:SkinTooltip(SkilletTradeskillTooltip)
 		AS:SkinScrollBar(SkilletQueueListScrollBar)
@@ -206,7 +171,7 @@ function AS:Skillet()
 	local function SkilletFrameOnUpdate(self, event, ...)
 		SkilletRecipeNotesButton:SetPoint('BOTTOMRIGHT', SkilletReagentParent, 'TOPRIGHT', 0, 2)
 		SkilletQueueManagementButton:SetPoint('RIGHT', SkilletRecipeNotesButton, 'LEFT', -5, 0)
-		--SkilletItemCountInputBox:SetPoint('BOTTOM', SkilletCreateCountSlider, 'TOP', 0, 2)	
+		--SkilletItemCountInputBox:SetPoint('BOTTOM', SkilletCreateCountSlider, 'TOP', 0, 2)
 
 		if SkilletDoBasic_Campfire then
 			SkilletDoBasic_Campfire:ClearAllPoints()
@@ -215,7 +180,7 @@ function AS:Skillet()
 		if SkilletDoDisenchant then
 			SkilletDoDisenchant:ClearAllPoints()
 			SkilletDoDisenchant:SetPoint('BOTTOMRIGHT', SkilletRankFrame, 'TOPRIGHT', -26, 3)
-		end	
+		end
 		if SkilletDoProspecting then
 			SkilletDoProspecting:ClearAllPoints()
 			SkilletDoProspecting:SetPoint('BOTTOMRIGHT', SkilletRankFrame, 'TOPRIGHT', -52, 3)
@@ -260,7 +225,7 @@ function AS:Skillet()
 				local bName = _G[buttonName]
 				if not bName then
 					bName = CreateFrame('CheckButton', bName, nil, UIParent)
-				end 
+				end
 				bName:ClearAllPoints()
 				bName:SetPoint('BOTTOMLEFT', SkilletRankFrame, 'TOPLEFT', x, 3)
 				x = x + bName:GetWidth() + 1
@@ -278,6 +243,7 @@ function AS:Skillet()
 			end
 		end
 	end
+
 	local buttons = {
 		'SkilletQueueAllButton',
 		'SkilletCreateAllButton',
@@ -299,10 +265,10 @@ function AS:Skillet()
 
 	for _, button in pairs(buttons) do
 		AS:SkinButton(_G[button])
-	end	
+	end
 
 	AS:SkinCloseButton(SkilletFrameCloseButton)
-	AS:SkinCloseButton(SkilletStandalonQueueCloseButton)
+	AS:SkinCloseButton(SkilletStandaloneQueueCloseButton)
 	AS:SkinDropDownBox(SkilletRecipeGroupDropdown)
 	AS:SkinDropDownBox(SkilletSortDropdown)
 	AS:SkinDropDownBox(SkilletQueueLoadDropdown)
@@ -330,7 +296,7 @@ function AS:Skillet()
 	AS:SkinEditBox(SkilletQueueSaveEditBox)
 	AS:StripTextures(SkilletRankFrameBorder)
 	AS:SkinStatusBar(SkilletRankFrame)
-	SkilletRankFrame:SetHeight(10)		
+	SkilletRankFrame:SetHeight(10)
 	AS:SkinScrollBar(SkilletSkillListScrollBar, 5)
 
 	_G['SkilletSkillListParent']:SetScript('OnShow', SkilletFrameOnShow)
@@ -339,6 +305,47 @@ function AS:Skillet()
 	_G['SkilletHideUncraftableRecipes']:SetScript('OnUpdate', SkinIcon)
 	_G['SkilletReagentParent']:SetScript('OnUpdate', SkinReagentIcon)
 	_G['SkilletPluginButton']:SetScript('PostClick', SkinPluginButtons)
+
+	local point, relativeTo, relativePoint, xOffset, yOffset;
+	AS:SkinDropDownBox(SkilletFilterDropdown)
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletSearchBox:GetPoint();
+	SkilletSearchBox:SetPoint(point, relativeTo, relativePoint, xOffset-1, yOffset);
+	AS:SkinEditBox(SkilletSearchBox)
+	SkilletSearchBox:SetSize(125,18)
+
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletSearchFilterClear:GetPoint();
+	SkilletSearchFilterClear:SetPoint(point, relativeTo, relativePoint, xOffset+10, yOffset+2);
+	AS:SkinNextPrevButton(SkilletSearchFilterClear)
+	--SquareButton_SetIcon(SkilletSearchFilterClear, "DELETE")
+	SkilletSearchFilterClear:Size(18)
+
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletClearNumButton:GetPoint();
+	SkilletClearNumButton:SetPoint(point, relativeTo, relativePoint, xOffset+10, yOffset+2);
+	AS:SkinNextPrevButton(SkilletClearNumButton)
+	--SquareButton_SetIcon(SkilletClearNumButton, "DELETE")
+	SkilletClearNumButton:Size(18)
+
+	SkilletSortAscButton.text:SetText("")
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletSortAscButton:GetPoint();
+	SkilletSortAscButton:SetPoint(point, relativeTo, relativePoint, xOffset+3, yOffset);
+	AS:SkinNextPrevButton(SkilletSortAscButton, true, true)
+	SkilletSortAscButton:Size(18)
+
+	SkilletSortDescButton.text:SetText("")
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletSortDescButton:GetPoint();
+	SkilletSortDescButton:SetPoint(point, relativeTo, relativePoint, xOffset+3, yOffset);
+	AS:SkinNextPrevButton(SkilletSortDescButton, true, false)
+	SkilletSortDescButton:Size(18)
+
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletFilterOperations:GetPoint();
+	SkilletFilterOperations:SetPoint(point, relativeTo, relativePoint, xOffset+5, yOffset);
+	AS:SkinNextPrevButton(SkilletFilterOperations, false, false)
+	SkilletFilterOperations:Size(18)
+
+	point, relativeTo, relativePoint, xOffset, yOffset = SkilletRecipeGroupOperations:GetPoint();
+	SkilletRecipeGroupOperations:SetPoint(point, relativeTo, relativePoint, xOffset+5, yOffset);
+	AS:SkinNextPrevButton(SkilletRecipeGroupOperations, false, false)
+	SkilletRecipeGroupOperations:Size(18)
 end
 
-AS:RegisterSkin('Skillet', AS.Skillet)
+AS:RegisterSkin('Skillet', AS.Skillet, '[AddonLoader]')

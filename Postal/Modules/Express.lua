@@ -25,13 +25,13 @@ function Postal_Express:Reset(event)
 	self:UnregisterEvent("MAIL_CLOSED")
 	self:UnregisterEvent("PLAYER_LEAVING_WORLD")
 end
-	
+
 function Postal_Express:OnEnable()
 	self:RawHook("InboxFrame_OnClick", true)
 	self:RawHook("InboxFrame_OnModifiedClick", "InboxFrame_OnClick", true) -- Eat all modified clicks too
 	self:RawHook("InboxFrameItem_OnEnter", true)
 
-	self:RegisterEvent("MAIL_SHOW")	
+	self:RegisterEvent("MAIL_SHOW")
 end
 
 -- Disabling modules unregisters all events/hook automatically
@@ -41,7 +41,7 @@ end
 function Postal_Express:InboxFrameItem_OnEnter(this, motion)
 	self.hooks["InboxFrameItem_OnEnter"](this, motion)
 	local tooltip = GameTooltip
-	
+
 	local money, COD, _, hasItem, _, wasReturned, _, canReply = select(5, GetInboxHeaderInfo(this.index))
 	if Postal.db.profile.Express.MultiItemTooltip and hasItem and hasItem > 1 then
 		for i = 1, ATTACHMENTS_MAX_RECEIVE do

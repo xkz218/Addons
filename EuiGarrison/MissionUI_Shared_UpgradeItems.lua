@@ -73,11 +73,11 @@ local function UpgradeItems_InitButtons()
                u:SetAttribute("shift-type*", "item")
                u:SetAttribute("shift-item*", "item:" .. item_id)
                u.UpgradeItemButton_CastSpellOnCurrentFollower = UpgradeItemButton_CastSpellOnCurrentFollower
-               -- SecureHandlerWrapScript(u, "OnClick", u, "return nil, 'postclick'", [[
-                  -- if self:GetEffectiveAttribute("type", button) == "item" then
-                     -- self:CallMethod("UpgradeItemButton_CastSpellOnCurrentFollower")
-                  -- end
-               -- ]])
+               SecureHandlerWrapScript(u, "OnClick", u, "return nil, 'postclick'", [[
+                  if self:GetEffectiveAttribute("type", button) == "item" then
+                     self:CallMethod("UpgradeItemButton_CastSpellOnCurrentFollower")
+                  end
+               ]])
             else
                u:SetAttribute("type", "item")
                u:SetAttribute("item", "item:" .. item_id)

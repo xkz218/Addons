@@ -28,16 +28,30 @@ rsMapTrackerFrame.questTitles = {}
 --local WorldMapFrame_CurrentUpdate = WorldMapFrame:GetScript("OnUpdate") or function() end
 rsMapTrackerFrame:RegisterEvent("WORLD_MAP_UPDATE")
 rsMapTrackerFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+rsMapTrackerFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+
+local forzeReload = nil
 
 rsMapTrackerFrame:SetScript('OnEvent', function(_, event) 
 	if (event == "WORLD_MAP_UPDATE") then
 		RareScanner:ReloadIcons()
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		SetMapToCurrentZone()
+	elseif (event == "PLAYER_REGEN_ENABLED") then
+		if (forzeReload) then
+			RareScanner:ReloadIcons(true)
+			forzeReload = nil
+		end
 	end
 end)
 
 function RareScanner:ReloadIcons(forze)
+	-- If in combat do nothing
+	if (InCombatLockdown()) then
+		forzeReload = true
+		return
+	end
+	
 	-- if forze dump all data and reload
 	if (forze) then
 		rsMapTrackerFrame.currentZoneID = nil
@@ -68,11 +82,22 @@ end
 
 function RareScanner:ResetMapIcons()
 	for k, v in pairs (rsMapTrackerFrame.buttons) do
-		v:Hide()
+		if (not InCombatLockdown()) then
+			v:Hide()
+		else
+			forzeReload = true
+			return
+		end
 	end
 end
 
 function RS_LoadMapIcons(zoneID)	
+	-- If in combat do nothing
+	if (InCombatLockdown()) then
+		forzeReload = true
+		return
+	end
+	
 	-- Hide buttons if shown
 	RareScanner:ResetMapIcons()
 	
@@ -106,6 +131,12 @@ function RS_LoadMapIcons(zoneID)
 end
 
 function RS_UpdateMapIcon(npcID)
+	-- If in combat do nothing
+	if (InCombatLockdown()) then
+		forzeReload = true
+		return
+	end
+	
 	-- ignore filtered zones
 	if (RareScanner:ZoneFiltered(npcID)) then
 		return
@@ -128,8 +159,31 @@ function RS_UpdateMapIcon(npcID)
 end
 
 function RS_AddMapIcon(npcID, npcData, forzed) 
+	-- If in combat do nothing
+	if (InCombatLockdown()) then
+		forzeReload = true
+		return
+	end
+
+	-- If not in our database ignore it
+	local npcName = RareScanner:NpcIdToName(npcID)
+	if (not npcName) then
+		-- and delete it
+		private.db.global.rares_found[npcID] = nil
+		RareScanner:PrintDebugMessage("DEBUG: Eliminado de la tabla de rares_found el NPC con ID "..npcID.." dado que no existe en nuestra base de datos")
+		return
+	end
+	
+	-- If coordinates not properly calculated ignore it
+	if (not npcData or not npcData.coordX or not npcData.coordY or not npcData.mapID or not tonumber(npcData.coordY) or not tonumber(npcData.coordX)) then
+		-- and delete it
+		private.db.global.rares_found[npcID] = nil
+		RareScanner:PrintDebugMessage("DEBUG: Eliminado de la tabla de rares_found el NPC con ID "..npcID.." dado que alguna de sus coordenadas se ha grabado incorrectamente")
+		return
+	end
+	
 	-- If world quest ignore it
-	if (RS_tContains(rsMapTrackerFrame.questTitles, RareScanner:NpcIdToName(npcID))) then
+	if (RS_tContains(rsMapTrackerFrame.questTitles, npcName)) then
 		return
 	end
 	
@@ -147,13 +201,19 @@ function RS_AddMapIcon(npcID, npcData, forzed)
 	if (next(private.db.general.filteredRares) ~= nil and private.db.general.filteredRares[npcID] == false) then
 		return
 	end
+	
+	-- If the NPC has been reported and you aren't at the same place, then ignore it
+	local currentPlayerMapID = GetCurrentMapAreaID()
+	if (currentPlayerMapID and npcData.mapID ~= currentPlayerMapID) then
+		return
+	end
 
 	-- If not forzed is an update or a new rare found
 	local buttonUpdated = false
 	if (not forzed) then
 		for k, button in pairs (rsMapTrackerFrame.buttons) do
 			if (button.npcID == npcID) then
-				buttonUpdated = RS_SetupMapIcon(button, npcID, npcData)
+				buttonUpdated = RS_SetupMapIcon(button, npcID, npcData, npcName)
 			end
 		end
 	end
@@ -181,27 +241,27 @@ function RS_AddMapIcon(npcID, npcData, forzed)
 	end
 	
 	-- Setup button
-	RS_SetupMapIcon(button, npcID, npcData)
+	RS_SetupMapIcon(button, npcID, npcData, npcName)
 	button:SetFrameLevel(601)
     button:Show()
 	
 	rsMapTrackerFrame.buttons[index] = button
 end
 
-function RS_SetupMapIcon(button, npcID, npcData)
+function RS_SetupMapIcon(button, npcID, npcData, npcName)
 	-- Adapt coordinates to pixel coordinates
     local x = ( npcData.coordX / 100) * WorldMapDetailFrame:GetWidth();
     local y = (1 - npcData.coordY / 100) * WorldMapDetailFrame:GetHeight();
 
 	-- Loads information
 	button.npcID = npcID
-	button.name = RareScanner:NpcIdToName(npcID)
+	button.name = npcName
 	button.foundTime = npcData.foundTime
 	button.killed = private.db.char.rares_killed[npcID]
 	button:SetPoint("CENTER", "WorldMapDetailFrame", "BOTTOMLEFT", x, y);
 	
 	-- Eternal death
-	if (RS_tContains(private.PERMANENT_KILLS_ZONE_IDS, private.ZONE_IDS[npcID].zoneID) or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS, npcData.mapID)) then
+	if ((private.ZONE_IDS[npcID] and RS_tContains(private.PERMANENT_KILLS_ZONE_IDS, private.ZONE_IDS[npcID].zoneID)) or RS_tContains(private.PERMANENT_KILLS_ZONE_IDS, npcData.mapID)) then
 		button.killable = true
 	else
 		button.killable = false

@@ -109,10 +109,12 @@ L["Use Postal's auto-complete"] = true
 L["Verbose mode"] = true
 L["Wire"] = true
 
-if GetLocale() == "enUS" or GetLocale() == "enGB" then return end
+    if GetLocale() == "enUS" or GetLocale() == "enGB" then
+        return
+    end
 end
 
-local L = AL3:NewLocale("Postal", "deDE")
+L = AL3:NewLocale("Postal", "deDE")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Klick|r, um diesen Gegenstand an %s zu senden."
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fStrg-Klick|r, um ähnliche Gegenstände anzuhängen."
@@ -225,10 +227,10 @@ L["Use Postal's auto-complete"] = "Postals automatische Vervollständigung verwe
 L["Verbose mode"] = "Ausführlicher Modus"
 L["Wire"] = "Geldbetrag im Betreff"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "esES") or AL3:NewLocale("Postal", "esMX")
+L = AL3:NewLocale("Postal", "esES") or AL3:NewLocale("Postal", "esMX")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Clic|r para enviar este objeto a %s"
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clic|r para adjuntar objetos similares."
@@ -341,10 +343,10 @@ L["Use Postal's auto-complete"] = "Usar el autocompletado de Postal"
 L["Verbose mode"] = "Modo detallado"
 L["Wire"] = "Telegrama"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "frFR")
+L = AL3:NewLocale("Postal", "frFR")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+clic gauche|r pour envoyer cet objet à %s."
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+clic|r pour joindre les objets similaires."
@@ -456,10 +458,10 @@ L["Use Postal's auto-complete"] = "Utiliser la saisie intuitive de Postal"
 L["Verbose mode"] = "Mode Bavard"
 L["Wire"] = "Câbler"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "koKR")
+L = AL3:NewLocale("Postal", "koKR")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-클릭|r으로 이 아이템을 %s님에게 보냅니다."
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-클릭|r으로 같은 종류의 아이템을 첨부합니다."
@@ -571,10 +573,10 @@ L["Use Postal's auto-complete"] = "Postal의 자동 완성 사용"
 L["Verbose mode"] = "대화창 메시지 표시"
 L["Wire"] = "금액 표시"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "ruRU")
+L = AL3:NewLocale("Postal", "ruRU")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+щелчок|r чтобы выслать предмет в адрес %s."
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fControl+щелчок|r чтобы прикрепить аналогичные предеметы."
@@ -687,10 +689,10 @@ L["Use Postal's auto-complete"] = "Авто-завершение использ�
 L["Verbose mode"] = "Детальный режим"
 L["Wire"] = "Оценка"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "zhCN")
+L = AL3:NewLocale("Postal", "zhCN")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt+点击|r将该物品发送给%s。"
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl+点击|r附加类似物品。"
@@ -802,10 +804,10 @@ L["Use Postal's auto-complete"] = "使用 Postal 的自动完成"
 L["Verbose mode"] = "消息模式"
 L["Wire"] = "填充标题"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "zhTW")
+L = AL3:NewLocale("Postal", "zhTW")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-點擊: |r將物品寄給%s。"
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-點擊|r附加類似物品。"
@@ -918,10 +920,10 @@ L["Use Postal's auto-complete"] = "使用Postal的自動完成"
 L["Verbose mode"] = "消息模式"
 L["Wire"] = "自動填寫金額"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "ptBR")
+L = AL3:NewLocale("Postal", "ptBR")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r para enviar este item para %s."
 L["|cffeda55fControl-Click|r to attach similar items."] = "|cffeda55fCtrl-Clique|r para anexar itens semelhantes"
@@ -1034,10 +1036,10 @@ L["Use Postal's auto-complete"] = "Usar o auto-completar do Postal"
 L["Verbose mode"] = "Modo verbal"
 L["Wire"] = "Telegrama"
 
-return
+    return
 end
 
-local L = AL3:NewLocale("Postal", "itIT")
+L = AL3:NewLocale("Postal", "itIT")
 if L then
 L["|cffeda55fAlt-Click|r to send this item to %s."] = "|cffeda55fAlt-Click|r per spedire questo oggetto a %s."
 L["|cffeda55fControl-Click|r to attach similar items."] = "Control-Click per allegare oggetti simili"
@@ -1149,5 +1151,5 @@ L["Use Postal's auto-complete"] = "Usa l'auto-completamento di Postal"
 L["Verbose mode"] = "Modalità Testuale"
 L["Wire"] = "telegramma"
 
-return
+    return
 end

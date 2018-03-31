@@ -321,8 +321,46 @@ function filterFuncs.Breed()
 	return GetFilter(self,"Breed",(rematch:GetBreedIndex(petInfo.petID) or 13)-2) or false
 end
 
+--function filterFuncs.Strong()
+--	return roster:IsStrong(petInfo.speciesID) or false
+--end
+
 function filterFuncs.Strong()
-	return roster:IsStrong(petInfo.speciesID) or false
+   -- return roster:IsStrong(petInfo.speciesID) or false
+
+   if roster:IsStrong(petInfo.speciesID) then -- the species is strong vs the chosen filters
+
+      -- if 'Use Level In Strong Vs Filter' is checked, strong abilities need to meet level requirement too
+      if settings.StrongVsLevel then
+         if not petInfo.level then
+            return false -- unowned pets automatically fail
+         elseif petInfo.level<20 then -- if pet is under 20, it can potentially fail level requirement
+            -- this repeats some work from roster:IsStrong(speciesID) to confirm level (can't use cache for individual pets)
+            -- fortunately the impact as not huge since the species cache limits how often this part runs
+            local abilities,levels = rematch:GetAbilities(petInfo.speciesID)
+            local lookup = rematch.info
+            wipe(lookup)
+            -- fill lookup table with abilityType of attacks this species has
+            for index,abilityID in ipairs(abilities) do
+               local _,_,_,_,_,_,abilityType,noHints = C_PetBattles.GetAbilityInfoByID(abilityID)
+               if not noHints and petInfo.level>=levels[index] then
+                  lookup[abilityType] = true
+               end
+            end
+            -- then go through each filter and make sure each Strong Vs type are accounted for
+            for attackType in pairs(settings.Filters.Strong) do
+               if not lookup[rematch.hintsDefense[attackType][1]] then
+                  return false
+               end
+            end
+         end
+      end
+
+      -- if we reached here, either pet met level requirements or there were no level requirements
+      return true
+   end
+   -- if we reached here, species wasn't strong vs the chosen filters
+   return false
 end
 
 function filterFuncs.Similar()

@@ -58,70 +58,8 @@ for _, devName in pairs(DEVELOPERS) do
 	DEVELOPER_STRING = DEVELOPER_STRING..devName..'    '
 end
 
-local Defaults, DebugString = nil, ''
-function AS:SetupProfile()
-	if not Defaults then
-		Defaults = {
-			profile = {
-			-- Embeds
-				['EmbedOoC'] = false,
-				['EmbedOoCDelay'] = 10,
-				['EmbedCoolLine'] = false,
-				['EmbedSexyCooldown'] = false,
-				['EmbedSystem'] = false,
-				['EmbedSystemDual'] = false,
-				['EmbedMain'] = 'Skada',
-				['EmbedLeft'] = 'Skada',
-				['EmbedRight'] = 'Skada',
-				['EmbedRightChat'] = true,
-				['EmbedLeftWidth'] = 200,
-				['EmbedBelowTop'] = false,
-				['TransparentEmbed'] = false,
-				['EmbedIsHidden'] = false,
-				['EmbedFrameStrata'] = '3-MEDIUM',
-				['EmbedFrameLevel'] = 10,
-			-- Misc
-				['RecountBackdrop'] = true,
-				['SkadaBackdrop'] = true,
-				['OmenBackdrop'] = true,
-				['DetailsBackdrop'] = true,
-				['MiscFixes'] = true,
-				['DBMSkinHalf'] = false,
-				['DBMFont'] = 'EUI',
-				['DBMFontSize'] = 12,
-				['DBMFontFlag'] = 'OUTLINE',
-				['DBMRadarTrans'] = false,
-				['WeakAuraAuraBar'] = false,
-				['WeakAuraIconCooldown'] = false,
-				['SkinTemplate'] = 'Transparent',
-				['HideChatFrame'] = 'NONE',
-				['SkinDebug'] = false,
-				['LoginMsg'] = true,
-				['EmbedSystemMessage'] = true,
-				['ElvUISkinModule'] = false,
-				['ThinBorder'] = false,
-			},
-		}
-
-		for skin in pairs(AS.register) do
-			if Defaults.profile[skin] == nil then
-				if AS:CheckAddOn('ElvUI') and strfind(skin, 'Blizzard_') then
-					Defaults.profile[skin] = false
-				else
-					Defaults.profile[skin] = true
-				end
-			end
-		end
-	end
-
-	self.data = LibStub('AceDB-3.0'):New('AddOnSkinsDB', Defaults)
-
-	self.data.RegisterCallback(self, 'OnProfileChanged', 'SetupProfile')
-	self.data.RegisterCallback(self, 'OnProfileCopied', 'SetupProfile')
-	self.db = self.data.profile
-end
-
-function AS:GetOptions()
+local DebugString = ''
+function AS:BuildOptions()
 	local function GenerateOptionTable(skinName, order)
 		local text = strtrim(skinName:gsub('^Blizzard_(.+)','%1'):gsub('(%l)(%u%l)','%1 %2'))
 		local options = {
@@ -136,14 +74,14 @@ function AS:GetOptions()
 		return options
 	end
 
-	local Options = {
+	AS.Options = {
 		order = 101,
 		type = 'group',
 		name = "11."..AS.Title,
 		childGroups = 'tab',
 		args = {
 			addons = {
-				order = 0,
+				order = 1,
 				type = 'group',
 				name = ASL['AddOn Skins'],
 				get = function(info) return AS:CheckOption(info[#info]) end,
@@ -151,7 +89,7 @@ function AS:GetOptions()
 				args = {},
 			},
 			blizzard = {
-				order = 1,
+				order = 2,
 				type = 'group',
 				name = ASL['Blizzard Skins'],
 				get = function(info) return AS:CheckOption(info[#info]) end,
@@ -161,24 +99,29 @@ function AS:GetOptions()
 			bossmods = {
 				type = 'group',
 				name = ASL['BossMod Options'],
-				order = 2,
+				order = 3,
 				get = function(info) return AS:CheckOption(info[#info]) end,
 				set = function(info, value) AS:SetOption(info[#info], value) end,
 				args = {
+					BossModHeader = {
+						order = 0,
+						type = 'header',
+						name = AS:Color(ASL['BossMod Options']),
+					},
 					DBMFont = {
 						type = 'select', dialogControl = 'LSM30_Font',
 						order = 1,
-						name = ASL['DBM|VEM Font'],
-						values = AceGUIWidgetLSMlists.font,
+						name = ASL['DBM Font'],
+						values = AS.LSM:HashTable('font'),
 					},
 					DBMFontSize = {
 						type = 'range',
 						order = 2,
-						name = ASL['DBM|VEM Font Size'],
+						name = ASL['DBM Font Size'],
 						min = 8, max = 18, step = 1,
 					},
 					DBMFontFlag = {
-						name = ASL['DBM|VEM Font Flag'],
+						name = ASL['DBM Font Flag'],
 						order = 3,
 						type = 'select',
 						values = {
@@ -191,7 +134,7 @@ function AS:GetOptions()
 					},
 					DBMSkinHalf = {
 						type = 'toggle',
-						name = ASL['DBM|VEM Half-bar Skin'],
+						name = ASL['DBM Half-bar Skin'],
 						order = 4,
 						set = function(info, value)
 							AS:SetOption(info[#info], value)
@@ -212,12 +155,17 @@ function AS:GetOptions()
 				},
 			},
 			embed = {
-				order = 3,
+				order = 4,
 				type = 'group',
 				name = ASL['Embed Settings'],
 				get = function(info) return AS:CheckOption(info[#info]) end,
 				set = function(info, value) AS:SetOption(info[#info], value) AS:Embed_Check() end,
 				args = {
+					EmbedHeader = {
+						order = 0,
+						type = 'header',
+						name = AS:Color(ASL['Embed Settings']),
+					},
 					desc = {
 						type = 'description',
 						name = ASL['Settings to control Embedded AddOns:\n\nAvailable Embeds: alDamageMeter | Details | Omen | Skada | Recount | TinyDPS'],
@@ -225,13 +173,13 @@ function AS:GetOptions()
 					},
 					EmbedSystem = {
 						type = 'toggle',
-						name = ASL['Single Embed System'],
+						name = ASL['One Window Embed System'],
 						order = 2,
 						disabled = function() return AS:CheckOption('EmbedSystemDual') end,
 					},
 					EmbedMain = {
 						type = 'select',
-						name = ASL["Embed for Main Panel"],
+						name = ASL['Embed for One Window'],
 						disabled = function() return not AS:CheckOption("EmbedSystem") end,
 						order = 2,
 						values = {
@@ -245,13 +193,13 @@ function AS:GetOptions()
 					},
 					EmbedSystemDual = {
 						type = 'toggle',
-						name = ASL['Dual Embed System'],
+						name = ASL['Two Window Embed System'],
 						order = 4,
 						disabled = function() return AS:CheckOption('EmbedSystem') end,
 					},
 					EmbedLeft = {
-						type = 'select',					
-						name = ASL["Embed for Left Window"],
+						type = 'select',
+						name = ASL["Window One Embed"],
 						disabled = function() return not AS:CheckOption("EmbedSystemDual") end,
 						order = 5,
 						values = {
@@ -265,7 +213,7 @@ function AS:GetOptions()
 					},
 					EmbedRight = {
 						type = 'select',
-						name = ASL["Embed for Right Window"],
+						name = ASL["Window Two Embed"],
 						disabled = function() return not AS:CheckOption("EmbedSystemDual") end,
 						order = 6,
 						values = {
@@ -280,7 +228,7 @@ function AS:GetOptions()
 					EmbedLeftWidth = {
 						type = 'range',
 						order = 7,
-						name = ASL['Embed Left Window Width'],
+						name = ASL['Window One Width'],
 						min = 100,
 						max = 300,
 						step = 1,
@@ -394,13 +342,18 @@ function AS:GetOptions()
 			misc = {
 				type = 'group',
 				name = MISCELLANEOUS,
-				order = 4,
+				order = 5,
 				get = function(info) return AS:CheckOption(info[#info]) end,
 				set = function(info, value) AS:SetOption(info[#info], value) AS.NeedReload = true end,
 				args = {
+					MiscHeader = {
+						order = 0,
+						type = 'header',
+						name = AS:Color(MISCELLANEOUS),
+					},
 					SkinTemplate = {
 						name = ASL['Skin Template'],
-						order = 0,
+						order = 1,
 						type = 'select',
 						values = {
 							['Transparent'] = 'Transparent',
@@ -433,17 +386,22 @@ function AS:GetOptions()
 			faq = {
 				type = 'group',
 				name = ASL["FAQ's"],
-				order = 5,
+				order = 6,
 				args = {
+					FAQHeader = {
+						order = 0,
+						type = 'header',
+						name = AS:Color(ASL["FAQ's"]),
+					},
 					question1 = {
 						type = 'description',
-						name = '|cffc41f3b[Q] '..ASL['DBM/VEM Half-Bar Skin Spacing looks wrong. How can I fix it?'],
+						name = '|cffc41f3b[Q] '..ASL['DBM Half-Bar Skin Spacing looks wrong. How can I fix it?'],
 						order = 1,
 						fontSize = 'medium',
 					},
 					answer1 = {
 						type = 'description',
-						name = '|cffabd473[A] '..ASL['To use the DBM/VEM Half-Bar skin. You must change the DBM/VEM Options. Offset Y needs to be at least 15.'],
+						name = '|cffabd473[A] '..ASL['To use the DBM Half-Bar skin. You must change the DBM Options. Offset Y needs to be at least 15.'],
 						order = 2,
 						fontSize = 'medium',
 					},
@@ -517,59 +475,69 @@ function AS:GetOptions()
 	local order, blizzorder = 1, 1
 	for skinName, _ in AS:OrderedPairs(AS.register) do
 		if strfind(skinName, 'Blizzard_') then
-		--	Options.args.blizzard.args[skinName] = GenerateOptionTable(skinName, blizzorder)
+		--	AS.Options.args.blizzard.args[skinName] = GenerateOptionTable(skinName, blizzorder)
 		--	blizzorder = blizzorder + 1
 		else
-			Options.args.addons.args[skinName] = GenerateOptionTable(skinName, order)
+			AS.Options.args.addons.args.description = {
+				type = 'header',
+				name = AS:Color(ASL['AddOn Skins']),
+				order = 0,
+			}
+			AS.Options.args.addons.args[skinName] = GenerateOptionTable(skinName, order)
 			order = order + 1
 		end
 	end
 
 	if AS:CheckAddOn('ElvUI') then
-		Options.args.blizzard.args.description ={
+		AS.Options.args.blizzard.args.description = {
 			type = 'header',
-			name = ASL.OptionsPanel.ElvUIDesc,
+			name = AS:Color(ASL['Blizzard Skins']),
 			order = 0,
 		}
 
-		Options.args.misc.args.WeakAuraIconCooldown = {
+		AS.Options.args.misc.args.WeakAuraIconCooldown = {
 			type = 'toggle',
 			name = ASL['WeakAura Cooldowns'],
 			order = 1,
 			disabled = function() return not AS:CheckOption('WeakAuras', 'WeakAuras') end,
 		}
 
-		Options.args.misc.args.ElvUISkinModule = {
+		AS.Options.args.misc.args.ElvUISkinModule = {
 			type = 'toggle',
 			name = 'Use ElvUI Skin Styling',
 			order = 5,
 		}
-
-		hooksecurefunc(LibStub('AceConfigDialog-3.0-ElvUI'), 'CloseAll', function(self, appName)
-			if AS.NeedReload then
-				ElvUI[1]:StaticPopup_Show("PRIVATE_RL")
-			end
-		end)
 	end
 
 	if not AS:CheckAddOn('ElvUI') then
-		Options.args.misc.args.ThinBorder = {
+		AS.Options.args.misc.args.ThinBorder = {
 			name = 'Thin Border',
 			order = 1,
 			type = 'toggle',
 		}
 	end
+end
 
-	Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(AS.data)
-	Options.args.profiles.order = -2
-	ACR:RegisterOptionsTable('AddOnSkinsProfiles', Options.args.profiles)
+function AS:GetOptions()
+	local Ace3OptionsPanel = AS:CheckAddOn('ElvUI') and ElvUI[1] or Enhanced_Config
+	Ace3OptionsPanel.Options.args.addonskins = AS.Options
 
+	AS.Options.args.profiles = LibStub('AceDBOptions-3.0'):GetOptionsTable(AS.data)
+	AS.Options.args.profiles.order = -2
+
+	if AS:CheckAddOn('ElvUI') then
+			hooksecurefunc(LibStub('AceConfigDialog-3.0-ElvUI'), 'CloseAll', function(self, appName)
+			if AS.NeedReload then
+				ElvUI[1]:StaticPopup_Show("PRIVATE_RL")
+			end
+		end)
+	end
 	if AS.EP then
 		local Ace3OptionsPanel = IsAddOnLoaded('ElvUI') and ElvUI[1] or Enhanced_Config
-		Ace3OptionsPanel.Options.args.addonskins = Options
+		Ace3OptionsPanel.Options.args.addonskins = AS.Options
 
 		local Ace3OptionsPanel = IsAddOnLoaded("ElvUI") and ElvUI[1] or Enhanced_Config and Enhanced_Config[1]
-		Ace3OptionsPanel.Options.args.addonskins = Options
+		Ace3OptionsPanel.Options.args.addonskins = AS.Options
 		local E,L = unpack(ElvUI)
 		E.Options.args.chat.args.EmbedRight = {
 			order = 4,
@@ -579,13 +547,5 @@ function AS:GetOptions()
 			set = function(info, value) AS:SetOption(info[#info], value) AS:Embed_Check() end,
 			args = E.Options.args.addonskins.args.embed.args,
 		}
-	end
-
-	ACR:RegisterOptionsTable('AddOnSkins', Options)
-	ACD:AddToBlizOptions('AddOnSkins', 'AddOnSkins', nil, 'addons')
-	for k, v in AS:OrderedPairs(Options.args) do
-		if k ~= 'addons' then
-			ACD:AddToBlizOptions('AddOnSkins', v.name, 'AddOnSkins', k)
-		end
 	end
 end

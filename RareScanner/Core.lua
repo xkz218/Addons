@@ -563,12 +563,14 @@ function scanner_button:CheckTargetRange(id)
 			end
 			
 			local x, y = GetPlayerMapPosition("player")
-			private.db.global.rares_found[id].coordX = string.sub(x*100,1,4)
-			private.db.global.rares_found[id].coordY = string.sub(y*100,1,4)
-			private.db.global.rares_found[id].relocated = RELOCATED
-			RareScanner:PrintDebugMessage("DEBUG: X: "..private.db.global.rares_found[id].coordX)
-			RareScanner:PrintDebugMessage("DEBUG: Y: "..private.db.global.rares_found[id].coordY)
-			RS_UpdateMapIcon(id)
+			if (x and y) then
+				private.db.global.rares_found[id].coordX = string.sub(x*100,1,4)
+				private.db.global.rares_found[id].coordY = string.sub(y*100,1,4)
+				private.db.global.rares_found[id].relocated = RELOCATED
+				RareScanner:PrintDebugMessage("DEBUG: X: "..private.db.global.rares_found[id].coordX)
+				RareScanner:PrintDebugMessage("DEBUG: Y: "..private.db.global.rares_found[id].coordY)
+				RS_UpdateMapIcon(id)
+			end
 		end
 	end
 end
@@ -963,8 +965,14 @@ function scanner_button:ReportRareFound(npcID)
 		else
 			mapX = string.sub(x*100,1,4)
 			mapY = string.sub(y*100,1,4)
-			RareScanner:PrintDebugMessage("DEBUG: Guardado en private.db.global.rares_found (ID: "..npcID.." MAPID: "..currentMap.." COORDX: "..mapX.." COORDY: "..mapY.." REUBI: "..NOT_RELOCATED.." TIMESTAMP: "..time())
+				
+			-- Extracts zoneID from database that its more accurate, just in case the players map didn't change properly
+			if (private.ZONE_IDS[npcID] and private.ZONE_IDS[npcID].zoneID ~= 0 and type(private.ZONE_IDS[npcID].zoneID) == "number") then
+				currentMap = private.ZONE_IDS[npcID].zoneID
+			end
+			
 			private.db.global.rares_found[npcID] = { mapID = currentMap, coordX = mapX, coordY = mapY, relocated = NOT_RELOCATED, foundTime = time() }
+			RareScanner:PrintDebugMessage("DEBUG: Guardado en private.db.global.rares_found (ID: "..npcID.." MAPID: "..currentMap.." COORDX: "..mapX.." COORDY: "..mapY.." REUBI: "..NOT_RELOCATED.." TIMESTAMP: "..time())
 			RS_UpdateMapIcon(npcID)
 		end
 	end
@@ -1222,7 +1230,7 @@ function RareScanner:ValidateReceivedData(data)
 	end
 	RareScanner:PrintDebugMessage("DEBUG: Evento recibido "..data[1])
 	if (data[1] == EVENT_NPC_FOUND) then
-		if (not data[2] or type (data[2]) ~= "number") then
+		if (not data[2] or type (data[2]) ~= "number" or not RareScanner:NpcIdToName(data[2])) then
 			RareScanner:PrintDebugMessage("DEBUG: EVENT_NPC_FOUND No recibido el npcID (string) en la posicion 2")
 			RareScanner:PrintDebugMessage("DEBUG: "..(data[2] or ''))
 			return
@@ -1285,7 +1293,7 @@ function RareScanner:ValidateReceivedData(data)
 		end
 		
 		for k, v in pairs (data[2]) do
-			if (not k or type (k)  ~= "number") then
+			if (not k or type (k)  ~= "number" or not RareScanner:NpcIdToName(k)) then
 				RareScanner:PrintDebugMessage("DEBUG: EVENT_SEND_DATA No recibido en el responseData el npcID (string) en la clave K")
 				RareScanner:PrintDebugMessage("DEBUG: "..(k or ''))
 				return

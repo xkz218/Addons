@@ -1,14 +1,12 @@
 local mod		= DBM:NewMod("z628", "DBM-PvP", 2)
 local L			= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 63 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 73 $"):sub(12, -3))
 mod:SetZone(DBM_DISABLE_ZONE_DETECTION)
 
 mod:RegisterEvents(
 	"ZONE_CHANGED_NEW_AREA" 	-- Required for BG start
 )
-
-mod:RemoveOption("HealthFrame")
 
 local warnSiegeEngine 		= mod:NewAnnounce("WarnSiegeEngine", 3)
 local warnSiegeEngineSoon 	= mod:NewAnnounce("WarnSiegeEngineSoon", 2) 
@@ -34,6 +32,22 @@ local function isInArgs(val, ...)	-- search for val in all args (...)
 		end
 	end
 	return false
+end
+
+local updateInfoFrame
+do
+	local lines = {}
+	updateInfoFrame = function()
+		table.wipe(lines)
+		if #gateHP == 0 then
+			DBM.InfoFrame:Hide()
+		end
+		for i = 1, #gateHP do
+			local currentHealth = gateHP[i]/6000
+			lines[L.GatesHealthFrame] = math.floor(currentHealth).."%"
+		end
+		return lines
+	end
 end
 
 local poi = {}
@@ -77,13 +91,13 @@ do
 				end
 			end
 			gateHP = {}
-			DBM.BossHealth:Clear()
 		elseif bgzone then
 			mod:UnregisterShortTermEvents()
-			DBM.BossHealth:Clear()
-			DBM.BossHealth:Hide()
 			mod:Stop()
 			bgzone = false
+			if self.Options.ShowGatesHealth then
+				DBM.InfoFrame:Hide()
+			end
 		end
 	end
 	
@@ -166,16 +180,20 @@ function mod:SPELL_BUILDING_DAMAGE(sourceGUID, _, _, _, destGUID, destName, _, _
 	if gateHP[guid] == nil then -- first hit
 		gateHP[guid] = 600000 -- initial gate health: 600000
 		if self.Options.ShowGatesHealth then
-			if not DBM.BossHealth:IsShown() then
-				DBM.BossHealth:Show(L.GatesHealthFrame)
+			if not DBM.InfoFrame:IsShown() then
+				DBM.InfoFrame:Show(7, "function", updateInfoFrame, false, false, true)
+			else
+				DBM.InfoFrame:Update()
 			end
-			DBM.BossHealth:AddBoss(function() return gateHP[guid]/6000	end, destName)
 		end
 	end
 	if gateHP[guid] > amount then
 		gateHP[guid] = gateHP[guid] - amount
 	else
 		gateHP[guid] = 0
+	end
+	if self.Options.ShowGatesHealth then
+		DBM.InfoFrame:Update()
 	end
 end
 

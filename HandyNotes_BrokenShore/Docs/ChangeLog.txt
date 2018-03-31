@@ -1,0 +1,40 @@
+$Id: ChangeLog.txt 19 2017-04-24 11:07:33Z arith $
+
+Revision History:
+=================
+
+* v1.03 (Apr. 25, 2017)
+-----------------------
+- Added rare mob: Aqueux
+- Mark some of the nodes to be hidden while is indoor as those are outdoor nodes
+- Slightly adjust some of chests' coordinates
+- Added Entrance of Feldust Cavern
+- Added location of Drak'thul
+- Localization update:
+  - Simplified Chinese
+
+* v1.02 (Apr. 24, 2017)
+-----------------------
+- Added Inquisitor Chillbane, Malgrazoth, Dreadblade Annihilator, Grossir
+- Added entrance of Felbreach Hollow
+- Added several treasure chest nodes and slightly adjust some of them's location
+- Set mobs and entrances with alpha values
+- Localization update:
+  - Traditional Chinese
+  - German (pas06)
+
+* v1.01 (Apr. 22, 2017)
+-----------------------
+- Added the following rare mobs: Flllurlokkr, Xorogun the Flamecarver, 
+  Somber Dawn, Lady Eldrathe, Doombringer Zar'thoz, Emberfire, 
+  Felmaw Emberfiend, Lord Hel'Nurath, Felbringer Xar'thok
+- Fixed the issue of profile configs can be saved
+- Fixed wrong texture path
+- Added Veiled Wyrmtongue Cache's locations
+- Localization update:
+  - Korean (yuk6196)
+  - German (pas06)
+
+* v1.00 (Apr. 21, 2017)
+-----------------------
+- Initial version which support WoW 7.2.0

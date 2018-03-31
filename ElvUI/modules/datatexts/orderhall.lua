@@ -33,10 +33,10 @@ local ORDER_HALL_MISSIONS = ORDER_HALL_MISSIONS
 -- GLOBALS: GarrisonLandingPage
 
 local GARRISON_CURRENCY = 1220
-local GARRISON_ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(GARRISON_CURRENCY)), 16, 16)
-local MAGIC_ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(1155)), 16, 16)--1155远古魔力
-local SUMMONABLE_ICON = format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(1342)), 16, 16)--1342抗魔联军战争物资
-local VOID_ICON =  format("\124T%s:%d:%d:0:0:64:64:4:60:4:60\124t", select(3, GetCurrencyInfo(1226)), 16, 16)--1226虚空碎片
+local GARRISON_ICON = format("|T%s:16:16:0:0:64:64:4:60:4:60|t", select(3, GetCurrencyInfo(GARRISON_CURRENCY)), 16, 16)
+local MAGIC_ICON = format("|T%s:16:16:0:0:64:64:4:60:4:60|t", select(3, GetCurrencyInfo(1155)), 16, 16)--1155远古魔力
+local SUMMONABLE_ICON = format("|T%s:16:16:0:0:64:64:4:60:4:60|t", select(3, GetCurrencyInfo(1342)), 16, 16)--1342抗魔联军战争物资
+local VOID_ICON =  format("|T%s:16:16:0:0:64:64:4:60:4:60|t", select(3, GetCurrencyInfo(1226)), 16, 16)--1226虚空碎片
 
 local function sortFunction(a, b)
 	return a.missionEndTime < b.missionEndTime

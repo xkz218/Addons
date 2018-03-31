@@ -13,6 +13,7 @@ V['general'] = {
 	['chatBubbleFont'] = "EUI",
 	['chatBubbleFontSize'] = 14,
 	['chatBubbleFontOutline'] = "NONE",
+	['chatBubbleName'] = false,
 	['pixelPerfect'] = false,
 	['replaceBlizzFonts'] = true,
 	['minimap'] = {
@@ -125,6 +126,7 @@ V['skins'] = {
 		["Contribution"] = true,
 		["BlizzardOptions"] = true,
 		["Warboard"] = true,
+		["AlliedRaces"] = true,
 	},
 }
 

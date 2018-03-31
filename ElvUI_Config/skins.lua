@@ -371,6 +371,11 @@ E.Options.args.skins = {
 					name = "Warboard",
 					desc = L["TOGGLESKIN_DESC"],
 				},
+				AlliedRaces = {
+					type = "toggle",
+					name = L["Allied Races"],
+					desc = L["TOGGLESKIN_DESC"],
+				},
 			},
 		},
 	},

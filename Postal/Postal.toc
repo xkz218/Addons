@@ -2,8 +2,8 @@
 ## Title: |cffC495DDEUI|r Postal
 ## Title-zhCN: |cffC495DDEUI|r邮件增强模块 Postal
 ## Title-zhTW: |cffC495DDEUI|r郵件增強模塊 Postal
-## Version: r404
-## X-Build: 404
+## Version: r405
+## X-Build: 405
 ## X-ReleaseDate: 2017-07-11T1:33:32Z
 ## X-Revision: $Revision: 398 $
 ## Author: Xinhuan
@@ -24,13 +24,13 @@
 ## X-Email: xinhuan AT gmail DOT com
 
 #@no-lib-strip@
-Libs\LibStub\LibStub.lua
-Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
-Libs\AceAddon-3.0\AceAddon-3.0.xml
-Libs\AceEvent-3.0\AceEvent-3.0.xml
-Libs\AceDB-3.0\AceDB-3.0.xml
-Libs\AceHook-3.0\AceHook-3.0.xml
-Libs\AceLocale-3.0\AceLocale-3.0.xml
+..\libs\LibStub\LibStub.lua
+..\libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+..\libs\AceAddon-3.0\AceAddon-3.0.xml
+..\libs\AceEvent-3.0\AceEvent-3.0.xml
+..\libs\AceDB-3.0\AceDB-3.0.xml
+..\libs\AceHook-3.0\AceHook-3.0.xml
+..\libs\AceLocale-3.0\AceLocale-3.0.xml
 #@end-no-lib-strip@
 
 Localization.lua

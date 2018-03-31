@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule('Skins')
 
 --Cache global variables
@@ -68,6 +68,10 @@ local function LoadSkin()
 	FollowerTab.XPBar:StripTextures()
 	FollowerTab.XPBar:SetStatusBarTexture(E["media"].normTex)
 	FollowerTab.XPBar:CreateBackdrop()
+
+	-- Orderhall Portraits
+	S:HandleFollowerListOnUpdateData('OrderHallMissionFrameFollowers')
+	S:HandleFollowerListOnUpdateData('GarrisonLandingPageFollowerList') -- this also applies to garrison landing page
 
 	-- Missions
 	local MissionTab = OrderHallMissionFrame.MissionTab

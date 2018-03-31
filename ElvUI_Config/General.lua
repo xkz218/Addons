@@ -698,6 +698,14 @@ E.Options.args.general = {
 					set = function(info, value) E.private.general.chatBubbleHideInInstance = value; E:GetModule('Misc'):UpdateChatBubbleInstanceToggle(value) end,
 					disabled = function() return E.private.general.chatBubbles == "disabled" end,
 				},
+				name = {
+					order = 6,
+					type = "toggle",
+					name = L["Chat Bubble Names"],
+					desc = L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled or when you are in an instance."],
+					get = function(info) return E.private.general.chatBubbleName end,
+					set = function(info, value) E.private.general.chatBubbleName = value; E:StaticPopup_Show("PRIVATE_RL") end,
+				},
 			},
 		},
 		objectiveFrameGroup = {

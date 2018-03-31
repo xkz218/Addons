@@ -18,7 +18,7 @@ local C_LFGList_GetAvailableActivities = C_LFGList.GetAvailableActivities
 local hooksecurefunc = hooksecurefunc
 --Global variables that we don't cache, list them here for mikk's FindGlobals script
 -- GLOBALS: GameFontNormal, NUM_SCENARIO_CHOICE_BUTTONS, MAX_LFG_LIST_SEARCH_AUTOCOMPLETE_ENTRIES
--- GLOBALS: NUM_LFD_CHOICE_BUTTONS, NUM_LFR_CHOICE_BUTTONS
+-- GLOBALS: NUM_LFD_CHOICE_BUTTONS, NUM_LFR_CHOICE_BUTTONS, LFGCollapseList, LFGIsIDHeader
 
 local function LoadSkin()
 	if E.private.skins.blizzard.enable ~= true or E.private.skins.blizzard.lfg ~= true then return end
@@ -270,6 +270,16 @@ local function LoadSkin()
 		S:HandleCheckBox(_G["LFDQueueFrameSpecificListButton"..i].enableButton, nil, true)
 	end
 
+	hooksecurefunc("LFGDungeonListButton_SetDungeon", function(button)
+		if button and button.expandOrCollapseButton:IsShown() then
+			if button.isCollapsed then
+				button.expandOrCollapseButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\PlusButton");
+			else
+				button.expandOrCollapseButton:SetNormalTexture("Interface\\AddOns\\ElvUI\\media\\textures\\MinusButton");
+			end
+		end
+	end)
+
 	hooksecurefunc("ScenarioQueueFrameSpecific_Update", function()
 
 		for i = 1, NUM_SCENARIO_CHOICE_BUTTONS do
@@ -323,6 +333,14 @@ local function LoadSkin()
 			item.border = CreateFrame("Frame", nil, item)
 			item.border:SetTemplate()
 			item.border:SetOutside(item.Icon)
+
+			hooksecurefunc(item.IconBorder, "SetVertexColor", function(self, r, g, b)
+				self:GetParent().border:SetBackdropBorderColor(r, g, b)
+				self:SetTexture("")
+			end)
+			hooksecurefunc(item.IconBorder, "Hide", function(self)
+				self:GetParent().border:SetBackdropBorderColor(unpack(E.media.bordercolor))
+			end)
 
 			item.Icon:SetTexCoord(unpack(E.TexCoords))
 			item.Icon:SetDrawLayer("OVERLAY")
@@ -670,7 +688,10 @@ local function LoadSkin()
 				button:SetBackdropBorderColor(unpack(E["media"].bordercolor))
 			end
 		end
-	end);
+	end)
+
+	-- Tutorial
+	S:HandleCloseButton(PremadeGroupsPvETutorialAlert.CloseButton)
 end
 
 S:AddCallback("LFG", LoadSkin)

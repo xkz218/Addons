@@ -1249,6 +1249,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 						control:DoLayout()
 					else
 						local controlType = v.dialogControl or v.control or "Dropdown"
+						local sortByValue = GetOptionsMemberValue("sortByValue",v,options,path,appName)
+
 						control = gui:Create(controlType)
 						if not control then
 							geterrorhandler()(("Invalid Custom Control Type - %s"):format(tostring(controlType)))
@@ -1260,7 +1262,8 @@ local function FeedOptions(appName, options,container,rootframe,path,group,inlin
 							itemType = nil
 						end
 						control:SetLabel(name)
-						control:SetList(values, nil, itemType)
+						control:SetList(values, nil, itemType, sortByValue)
+
 						local value = GetOptionsMemberValue("get",v, options, path, appName)
 						if not values[value] then
 							value = nil

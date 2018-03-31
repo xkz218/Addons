@@ -133,9 +133,12 @@ L['Replaces the default Blizzard fonts on various panels and frames with the fon
 L['AFK Mode'] = true;
 L["When you go AFK display the AFK screen."] = true;
 L["Quest Font Size"] = true;
+
 --chat
-	L["Copy Chat Lines"] = true
-	L["Adds an arrow infront of the chat lines to copy the entire line."] = true
+L["Show BattleTag Names"] = true
+L["Show BattleTag names instead of RealID names inside of chat."] = true
+L["Copy Chat Lines"] = true
+L["Adds an arrow infront of the chat lines to copy the entire line."] = true
 L["chat Item Level"] = true;
 L["Exclude Name"] = true;
 L["Excluded names will not be class colored."] = true;
@@ -823,6 +826,8 @@ L["No locals to dump"] = true;
 L['|cFFE30000Lua error recieved. You can view the error message when you exit combat.'] = true;
 
 --General
+L["Chat Bubble Names"] = true
+L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled or when you are in an instance."] = true;
 L["Enables the ElvUI Raid Control panel."] = true;
 L["Log Taints"] = true;
 L['Objective Frame Height'] = true;
@@ -1367,6 +1372,7 @@ L['You can use the /resetui command to reset all of your movers. You can also us
 L['ABOVE_THREAT_FORMAT'] = '%s: %.0f%% [%.0f%% above |cff%02x%02x%02x%s|r]'
 
 --UnitFrames
+L["Vertical Fill Direction"] = true
 L["toggle for Vehicle"] = true
 L["toggle for Vehicle desc."] = "When player enters the vehicle, the switch frame is the vehicle unit rather than the player itself."
 L["colorPerc"] = true
@@ -1935,6 +1941,7 @@ To disable leave the field blank, if you need more information visit http://www.
 
 --AuraWatch
 do
+	L["Duration Font Size"] = true
 	L["Count Font Size"] = true;
 	L["Spellname Font Size"] = true;
 	L["Update interval"] = true;

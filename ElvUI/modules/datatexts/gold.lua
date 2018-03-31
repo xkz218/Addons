@@ -6,6 +6,7 @@ local DT = E:GetModule('DataTexts')
 local pairs = pairs
 local join = string.join
 --WoW API / Variables
+local IsControlKeyDown = IsControlKeyDown
 local IsLoggedIn = IsLoggedIn
 local GetMoney = GetMoney
 local GetItemInfo = GetItemInfo

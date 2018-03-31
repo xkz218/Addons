@@ -57,9 +57,9 @@ end
 local function printTooMuchMail()
 	InboxTooMuchMail.Show = updateMailCounts	-- only print once, rest of the time: update
 	updateMailCounts()
-	
+
 	local cur,tot = GetInboxNumItems()
-	
+
 	local timeLeft = lastRefill+60-GetTime()
 	if cur>=50 or -- if inbox is full, no more will arrive
 	   timeLeft<0 then	-- if someone waited more than 60 seconds to take a mail out....
@@ -452,7 +452,7 @@ function Postal_Select:MAIL_INBOX_UPDATE()
 	-- (new mail received in the last 60 seconds))
 	local currentFirstMailDaysLeft = select(7, GetInboxHeaderInfo(1))
 	if currentFirstMailDaysLeft ~= firstMailDaysLeft then
-		-- First mail's daysLeft changed, indicating we have a 
+		-- First mail's daysLeft changed, indicating we have a
 		-- fresh MAIL_INBOX_UPDATE that has new data from CheckInbox()
 		-- Try to determine how many new mails were added in front
 		local numMails = GetInboxNumItems()
@@ -559,7 +559,7 @@ function Postal_Select.ModuleMenu(self, level)
 		info.checked = Postal.db.profile.Select.SpamChat
 		info.isNotRadio = 1
 		UIDropDownMenu_AddButton(info, level)
-		
+
 		if IsAddOnLoaded("MrPlow") then
 			info.text = L["Use Mr.Plow after opening"]
 			info.hasArrow = nil

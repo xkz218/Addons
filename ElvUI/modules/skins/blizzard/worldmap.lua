@@ -1,4 +1,4 @@
-local E, L, V, P, G = unpack(select(2, ...)); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
+local E, L, V, P, G = unpack(select(2, ...)); --Import: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 local S = E:GetModule('Skins')
 
 --Cache global variables
@@ -45,7 +45,6 @@ local function LoadSkin()
 	S:HandleButton(QuestMapFrame.DetailsFrame.AbandonButton)
 	S:HandleButton(QuestMapFrame.DetailsFrame.ShareButton, true)
 	S:HandleButton(QuestMapFrame.DetailsFrame.TrackButton)
-	-- This button is flashing. Needs review
 	S:HandleButton(QuestMapFrame.DetailsFrame.CompleteQuestFrame.CompleteButton, true)
 
 	QuestMapFrame.QuestsFrame.StoryTooltip:SetTemplate("Transparent")
@@ -54,6 +53,11 @@ local function LoadSkin()
 	S:HandleCloseButton(WorldMapFrameCloseButton)
 
 	S:HandleMaxMinFrame(WorldMapFrame.BorderFrame.MaximizeMinimizeFrame)
+
+	local TrackingOptions = _G["WorldMapFrame"].UIElementsFrame.TrackingOptionsButton
+	TrackingOptions.Button:SetAlpha(0)
+	TrackingOptions.Background:SetAlpha(0)
+	TrackingOptions.IconOverlay:SetTexture("")
 
 	local rewardFrames = {
 		['MoneyFrame'] = true,
@@ -99,6 +103,8 @@ local function LoadSkin()
 	WorldMapFrame.UIElementsFrame.BountyBoard.BountyName:FontTemplate(nil, 14, "OUTLINE")
 	WorldMapFrame.UIElementsFrame.OpenQuestPanelButton:Size(22,20)
 	WorldMapFrame.UIElementsFrame.CloseQuestPanelButton:Size(22,20)
+
+	S:HandleCloseButton(WorldMapFrame.UIElementsFrame.BountyBoard.TutorialBox.CloseButton)
 
 	WorldMapFrameAreaLabel:FontTemplate(nil,30)
 	WorldMapFrameAreaLabel:SetShadowOffset(2,-2)

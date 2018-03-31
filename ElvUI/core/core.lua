@@ -15,7 +15,6 @@ local UnitGUID = UnitGUID
 local CreateFrame = CreateFrame
 local C_Timer_After = C_Timer.After
 local C_PetBattles_IsInBattle = C_PetBattles.IsInBattle
-local GetBonusBarOffset = GetBonusBarOffset
 local GetCombatRatingBonus = GetCombatRatingBonus
 local GetCVar, SetCVar, GetCVarBool = GetCVar, SetCVar, GetCVarBool
 local GetDodgeChance, GetParryChance = GetDodgeChance, GetParryChance
@@ -624,8 +623,8 @@ function E:CheckRole()
 		role = self.ClassRole[self.myclass][talentTree]
 	end
 
-	--Check for PvP gear or gladiator stance
-	if role == "Tank" and (IsInPvPGear or (E.myclass == "WARRIOR" and GetBonusBarOffset() == 3)) then
+	--Check for PvP gear
+	if role == "Tank" and IsInPvPGear then
 		role = "Melee"
 	end
 
@@ -1481,6 +1480,16 @@ function E:DBConversions()
 		auraFilterStrip(name, content, ',')
 		auraFilterStrip(name, content, '^Friendly:')
 		auraFilterStrip(name, content, '^Enemy:')
+	end
+
+	--Convert old "Buffs and Debuffs" font size option to individual options
+	if E.db.auras.fontSize then
+		local fontSize = E.db.auras.fontSize
+		E.db.auras.buffs.countFontSize = fontSize
+		E.db.auras.buffs.durationFontSize = fontSize
+		E.db.auras.debuffs.countFontSize = fontSize
+		E.db.auras.debuffs.durationFontSize = fontSize
+		E.db.auras.fontSize = nil
 	end
 end
 

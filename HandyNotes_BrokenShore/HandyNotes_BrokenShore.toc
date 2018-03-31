@@ -1,0 +1,35 @@
+## Interface: 70200
+#@non-debug@
+## Title: HandyNotes - Broken Shore
+## Title-deDE: HandyNotes - Verheerte Küste
+## Title-koKR: HandyNotes - 부서진 해변
+## Title-zhCN: HandyNotes - 破碎海滩
+## Title-zhTW: |cFF008844[地圖]|r|cFF9966FF[HandyNotes]|r 破碎海岸
+## Notes: Shows the POIs in Broken Shore
+## Notes-koKR: 부서진 해변에 관심 지점을 표시합니다
+## Notes-zhCN: 顯示破碎海滩的 POI 位置
+## Notes-zhTW: 顯示破碎海岸的 POI 位置
+#@end-non-debug@
+#@debug@
+# ## Title: HandyNotes - Broken Shore
+# ## Title-zhCN: HandyNotes - 破碎海滩
+# ## Title-zhTW: HandyNotes - 破碎海岸
+# ## Notes: Shows the POIs in Broken Shore
+# ## Notes-zhCN: 顯示破碎海滩的 POI 位置
+# ## Notes-zhTW: 顯示破碎海岸的 POI 位置
+#@end-debug@
+## Author: arith
+## Version: r19
+## RequiredDeps: HandyNotes
+## DefaultState: enabled
+## SavedVariables: HandyNotes_BrokenShoreDB
+## X-Date: 2017-04-24T11:07:33Z
+## X-License: GPLv2
+## X-Category: Map
+
+Libs\Libs.xml
+Locale\Locales.xml
+Core\Constants.lua
+Core\Handler.lua
+Core\Config.lua
+Data\DB.lua

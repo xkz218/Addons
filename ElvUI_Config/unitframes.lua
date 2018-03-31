@@ -28,9 +28,10 @@ local FRIEND, ENEMY, SHOW, HIDE, DELETE, NONE, FILTERS, FONT_SIZE, COLOR = FRIEN
 -- GLOBALS: ElvUF_Target, ElvUF_TargetTarget, ElvUF_TargetTargetTarget, ElvUF_Focus, ElvUF_FocusTarget
 
 -- The variables below aren't caught by mikk's Find Globals script
+local CUSTOM, DISABLE, DEFAULT, COLORS = CUSTOM, DISABLE, DEFAULT, COLORS
 local SHIFT_KEY, ALT_KEY, CTRL_KEY = SHIFT_KEY, ALT_KEY, CTRL_KEY
 local HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP = HEALTH, MANA, NAME, PLAYER, CLASS, ROLE, GROUP
-local RAGE, FOCUS, ENERGY, PAIN, FURY, INSANITY, MAELSTROM, RUNIC_POWER, HOLY_POWER, LUNAR_POWER = RAGE, FOCUS, ENERGY, PAIN, FURY, INSANITY, MAELSTROM, RUNIC_POWER, HOLY_POWER, LUNAR_POWER
+local CHI_POWER, RAGE, FOCUS, ENERGY, PAIN, FURY, INSANITY, MAELSTROM, RUNIC_POWER, HOLY_POWER, LUNAR_POWER = CHI_POWER, RAGE, FOCUS, ENERGY, PAIN, FURY, INSANITY, MAELSTROM, RUNIC_POWER, HOLY_POWER, LUNAR_POWER
 local POWER_TYPE_ARCANE_CHARGES, SOUL_SHARDS, RUNES = POWER_TYPE_ARCANE_CHARGES, SOUL_SHARDS, RUNES
 ------------------------------
 
@@ -52,6 +53,13 @@ local positionValues = {
 	TOP = 'TOP',
 	BOTTOM = 'BOTTOM',
 };
+
+local orientationValues = {
+	--["AUTOMATIC"] = L["Automatic"], not sure if i will use this yet
+	["LEFT"] = L["Left"],
+	["MIDDLE"] = L["Middle"],
+	["RIGHT"] = L["Right"],
+}
 
 local threatValues = {
 	['GLOW'] = L["Glow"],
@@ -79,6 +87,37 @@ local petAnchors = {
 	TOP = 'TOP',
 	BOTTOM = 'BOTTOM',
 };
+
+local attachToValues = {
+	["Health"] = L["Health"],
+	["Power"] = L["Power"],
+	["InfoPanel"] = L["Information Panel"],
+	["Frame"] = L["Frame"],
+}
+local growthDirectionValues = {
+	DOWN_RIGHT = format(L["%s and then %s"], L["Down"], L["Right"]),
+	DOWN_LEFT = format(L["%s and then %s"], L["Down"], L["Left"]),
+	UP_RIGHT = format(L["%s and then %s"], L["Up"], L["Right"]),
+	UP_LEFT = format(L["%s and then %s"], L["Up"], L["Left"]),
+	RIGHT_DOWN = format(L["%s and then %s"], L["Right"], L["Down"]),
+	RIGHT_UP = format(L["%s and then %s"], L["Right"], L["Up"]),
+	LEFT_DOWN = format(L["%s and then %s"], L["Left"], L["Down"]),
+	LEFT_UP = format(L["%s and then %s"], L["Left"], L["Up"]),
+}
+
+local smartAuraPositionValues = {
+	["DISABLED"] = DISABLE,
+	["BUFFS_ON_DEBUFFS"] = L["Position Buffs on Debuffs"],
+	["DEBUFFS_ON_BUFFS"] = L["Position Debuffs on Buffs"],
+	["FLUID_BUFFS_ON_DEBUFFS"] = L["Fluid Position Buffs on Debuffs"],
+	["FLUID_DEBUFFS_ON_BUFFS"] = L["Fluid Position Debuffs on Buffs"],
+}
+
+local colorOverrideValues = {
+	['USE_DEFAULT'] = L["Use Default"],
+	['FORCE_ON'] = L["Force On"],
+	['FORCE_OFF'] = L["Force Off"],
+}
 
 local auraBarsSortValues = {
 	['TIME_REMAINING'] = L["Time Remaining"],
@@ -231,13 +270,6 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 				name = L["Sort Method"],
 				values = auraBarsSortValues,
 			},
-			filters = {
-				name = FILTERS,
-				guiInline = true,
-				type = 'group',
-				order = 500,
-				args = {},
-			},
 			friendlyAuraType = {
 				type = 'select',
 				order = 16,
@@ -270,6 +302,19 @@ local function GetOptionsTable_AuraBars(friendlyOnly, updateFunc, groupName)
 				type = 'range',
 				name = L["yOffset"],
 				min = -1000, max = 1000, step = 1,
+			},
+			spacing = {
+				order = 20,
+				type = "range",
+				name = L["Spacing"],
+				min = 0, softMax = 20, step = 1,
+			},
+			filters = {
+				name = FILTERS,
+				guiInline = true,
+				type = 'group',
+				order = 500,
+				args = {},
 			},
 		},
 	}
@@ -502,6 +547,10 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 				["HEALTH"] = L["Health"],
 				["POWER"] = L["Power"],
 			},
+			disabled = function()
+				local smartAuraPosition = E.db.unitframe.units[groupName].smartAuraPosition
+				return (smartAuraPosition and (smartAuraPosition == "BUFFS_ON_DEBUFFS" or smartAuraPosition == "FLUID_BUFFS_ON_DEBUFFS"))
+			end,
 		}
 	else
 		config.args.attachTo = {
@@ -515,6 +564,10 @@ local function GetOptionsTable_Auras(friendlyUnitOnly, auraType, isGroupFrame, u
 				["HEALTH"] = L["Health"],
 				["POWER"] = L["Power"],
 			},
+			disabled = function()
+				local smartAuraPosition = E.db.unitframe.units[groupName].smartAuraPosition
+				return (smartAuraPosition and (smartAuraPosition == "DEBUFFS_ON_BUFFS" or smartAuraPosition == "FLUID_DEBUFFS_ON_BUFFS"))
+			end,
 		}
 	end
 
@@ -988,6 +1041,7 @@ local function GetOptionsTable_Health(isGroupFrame, updateFunc, groupName, numUn
 	return config
 end
 
+
 local function CreateCustomTextGroup(unit, objectName)
 	if not E.Options.args.unitframe.args[unit] then
 		return
@@ -1032,59 +1086,67 @@ local function CreateCustomTextGroup(unit, objectName)
 					if unit == 'boss' or unit == 'arena' then
 						for i=1, 5 do
 							if UF[unit..i] then
-								UF[unit..i]:Tag(UF[unit..i]["customTexts"][objectName], '');
+								UF[unit..i]:Untag(UF[unit..i]["customTexts"][objectName]);
 								UF[unit..i]["customTexts"][objectName]:Hide();
+								UF[unit..i]["customTexts"][objectName] = nil
 							end
 						end
 					elseif unit == 'party' or unit:find('raid') then
 						for i=1, UF[unit]:GetNumChildren() do
 							local child = select(i, UF[unit]:GetChildren())
-							if child.Tag then
-								child:Tag(child["customTexts"][objectName], '');
+							if child.Untag then
+								child:Untag(child["customTexts"][objectName]);
 								child["customTexts"][objectName]:Hide();
+								child["customTexts"][objectName] = nil
 							else
 								for x=1, child:GetNumChildren() do
 									local c2 = select(x, child:GetChildren())
-									if(c2.Tag) then
-										c2:Tag(c2["customTexts"][objectName], '');
+									if(c2.Untag) then
+										c2:Untag(c2["customTexts"][objectName]);
 										c2["customTexts"][objectName]:Hide();
+										c2["customTexts"][objectName] = nil
 									end
 								end
 							end
 						end
 					elseif UF[unit] then
-						UF[unit]:Tag(UF[unit]["customTexts"][objectName], '');
+						UF[unit]:Untag(UF[unit]["customTexts"][objectName]);
 						UF[unit]["customTexts"][objectName]:Hide();
+						UF[unit]["customTexts"][objectName] = nil
 					end
 				end,
 			},
+			enable = {
+				order = 3,
+				type = "toggle",
+				name = L["Enable"],
+			},
 			font = {
 				type = "select", dialogControl = 'LSM30_Font',
-				order = 3,
+				order = 4,
 				name = L["Font"],
 				values = AceGUIWidgetLSMlists.font,
 			},
 			size = {
-				order = 4,
+				order = 5,
 				name = FONT_SIZE,
 				type = "range",
 				min = 4, max = 212, step = 1,
 			},
 			fontOutline = {
-				order = 5,
+				order = 6,
 				name = L["Font Outline"],
 				desc = L["Set the font outline."],
 				type = "select",
 				values = {
 					['NONE'] = NONE,
 					['OUTLINE'] = 'OUTLINE',
-
 					['MONOCHROMEOUTLINE'] = 'MONOCROMEOUTLINE',
 					['THICKOUTLINE'] = 'THICKOUTLINE',
 				},
 			},
 			justifyH = {
-				order = 6,
+				order = 7,
 				type = 'select',
 				name = L["JustifyH"],
 				desc = L["Sets the font instance's horizontal text alignment style."],
@@ -1095,27 +1157,22 @@ local function CreateCustomTextGroup(unit, objectName)
 				},
 			},
 			xOffset = {
-				order = 7,
+				order = 8,
 				type = 'range',
 				name = L["xOffset"],
 				min = -400, max = 400, step = 1,
 			},
 			yOffset = {
-				order = 8,
+				order = 9,
 				type = 'range',
 				name = L["yOffset"],
 				min = -400, max = 400, step = 1,
 			},
 			attachTextTo = {
 				type = 'select',
-				order = 9,
+				order = 10,
 				name = L["Attach Text To"],
-				values = {
-					['Health'] = L["Health"],
-					['Power'] = L["Power"],
-					['InfoPanel'] = L["Information Panel"],
-					['Frame'] = L["Frame"],
-				},
+				values = attachToValues,
 			},
 			text_format = {
 				order = 100,
@@ -2716,6 +2773,47 @@ E.Options.args.unitframe = {
 								},
 							},
 						},
+						debuffHighlight = {
+							order = 8,
+							name = L["Debuff Highlighting"],
+							type = 'group',
+							get = function(info)
+								local t = E.db.unitframe.colors.debuffHighlight[ info[#info] ]
+								local d = P.unitframe.colors.debuffHighlight[ info[#info] ]
+								return t.r, t.g, t.b, t.a, d.r, d.g, d.b, d.a
+							end,
+							set = function(info, r, g, b, a)
+								local t = E.db.unitframe.colors.debuffHighlight[ info[#info] ]
+								t.r, t.g, t.b, t.a = r, g, b, a
+								UF:Update_AllFrames()
+							end,
+							args = {
+								Magic = {
+									order = 1,
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG7,--Magic Effect
+									type = 'color',
+									hasAlpha = true,
+								},
+								Curse = {
+									order = 2,
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG8,--Curse Effect
+									type = 'color',
+									hasAlpha = true,
+								},
+								Disease = {
+									order = 3,
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG10,--Disease Effect
+									type = 'color',
+									hasAlpha = true,
+								},
+								Poison = {
+									order = 4,
+									name = ENCOUNTER_JOURNAL_SECTION_FLAG9,--Poison Effect
+									type = 'color',
+									hasAlpha = true,
+								},
+							},
+						},
 					},
 				},
 				disabledBlizzardFrames = {
@@ -2934,18 +3032,6 @@ E.Options.args.unitframe.args.player = {
 					get = function(info) return E.db.unitframe.units['player']['power'].hideonnpc end,
 					set = function(info, value) E.db.unitframe.units['player']['power'].hideonnpc = value; UF:CreateAndUpdateUF('player') end,
 				},
-				restIcon = {
-					order = 10,
-					name = L["Rest Icon"],
-					desc = L["Display the rested icon on the unitframe."],
-					type = 'toggle',
-				},
-				combatIcon = {
-					order = 11,
-					name = L["Combat Icon"],
-					desc = L["Display the combat icon on the unitframe."],
-					type = 'toggle',
-				},
 				threatStyle = {
 					type = 'select',
 					order = 12,
@@ -3045,89 +3131,325 @@ E.Options.args.unitframe.args.player = {
 					type = "toggle",
 					name = L["Additional Power Text"],
 				},
-				detachFromFrame = {
-					type = 'toggle',
-					order = 7,
-					name = L["Detach From Frame"],
-					set = function(info, value)
-						if value == true then
-							E.Options.args.unitframe.args.player.args.classbar.args.height.max = 300
-						else
-							E.Options.args.unitframe.args.player.args.classbar.args.height.max = 30
-						end
-						E.db.unitframe.units['player']['classbar'][ info[#info] ] = value;
-						UF:CreateAndUpdateUF('player')
-					end,
-				},
-				verticalOrientation = {
-					order = 8,
-					type = "toggle",
-					name = L["Vertical Orientation"],
-					disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
-				},
-				detachedWidth = {
-					type = 'range',
+				spacer = {
 					order = 9,
-					name = L["Detached Width"],
-					disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
-					min = ((E.db.unitframe.thinBorders or E.PixelMode) and 3 or 7), max = 800, step = 1,
+					type = "description",
+					name = "",
 				},
-				parent = {
-					type = 'select',
+				detachGroup = {
 					order = 10,
-					name = L["Parent"],
-					desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
-					disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
-					values = {
-						["FRAME"] = "FRAME",
-						["UIPARENT"] = "UIPARENT",
-					},
-				},
-				strataAndLevel = {
-					order = 20,
 					type = "group",
-					name = L["Strata and Level"],
-					get = function(info) return E.db.unitframe.units['player']['classbar']["strataAndLevel"][ info[#info] ] end,
-					set = function(info, value) E.db.unitframe.units['player']['classbar']["strataAndLevel"][ info[#info] ] = value; UF:CreateAndUpdateUF('player') end,
+					name = L["Detach From Frame"],
+					get = function(info) return E.db.unitframe.units['player']['classbar'][ info[#info] ] end,
+					set = function(info, value) E.db.unitframe.units['player']['classbar'][ info[#info] ] = value; UF:CreateAndUpdateUF('player') end,
 					guiInline = true,
-					disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
-					hidden = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
 					args = {
-						useCustomStrata = {
+						detachFromFrame = {
+							type = 'toggle',
 							order = 1,
-							type = "toggle",
-							name = L["Use Custom Strata"],
+							name = ENABLE,
+							width = 'full',
+							set = function(info, value)
+								if value == true then
+									E.Options.args.unitframe.args.player.args.classbar.args.height.max = 300
+								else
+									E.Options.args.unitframe.args.player.args.classbar.args.height.max = 30
+								end
+								E.db.unitframe.units['player']['classbar'][ info[#info] ] = value;
+								UF:CreateAndUpdateUF('player')
+							end,
 						},
-						frameStrata = {
+						detachedWidth = {
+							type = 'range',
 							order = 2,
-							type = "select",
-							name = L["Frame Strata"],
+							name = L["Detached Width"],
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
+							min = ((E.db.unitframe.thinBorders or E.PixelMode) and 3 or 7), max = 800, step = 1,
+						},
+						orientation = {
+							type = 'select',
+							order = 3,
+							name = L["Frame Orientation"],
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
 							values = {
-								["BACKGROUND"] = "BACKGROUND",
-								["LOW"] = "LOW",
-								["MEDIUM"] = "MEDIUM",
-								["HIGH"] = "HIGH",
-								["DIALOG"] = "DIALOG",
-								["TOOLTIP"] = "TOOLTIP",
+								['HORIZONTAL'] = L["Horizontal"],
+								['VERTICAL'] = L["Vertical"],
 							},
 						},
-						spacer = {
-							order = 3,
-							type = "description",
-							name = "",
-						},
-						useCustomLevel = {
+						verticalOrientation = {
 							order = 4,
 							type = "toggle",
-							name = L["Use Custom Level"],
+							name = L["Vertical Fill Direction"],
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
 						},
-						frameLevel = {
+						spacing = {
 							order = 5,
 							type = "range",
-							name = L["Frame Level"],
-							min = 2, max = 128, step = 1,
+							name = L["Spacing"],
+							min = ((E.db.unitframe.thinBorders or E.PixelMode) and -1 or -4), max = 20, step = 1,
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
+						},
+						parent = {
+							type = 'select',
+							order = 6,
+							name = L["Parent"],
+							desc = L["Choose UIPARENT to prevent it from hiding with the unitframe."],
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
+							values = {
+								["FRAME"] = "FRAME",
+								["UIPARENT"] = "UIPARENT",
+							},
+						},
+						strataAndLevel = {
+							order = 10,
+							type = "group",
+							name = L["Strata and Level"],
+							get = function(info) return E.db.unitframe.units['player']['classbar']["strataAndLevel"][ info[#info] ] end,
+							set = function(info, value) E.db.unitframe.units['player']['classbar']["strataAndLevel"][ info[#info] ] = value; UF:CreateAndUpdateUF('player') end,
+							guiInline = true,
+							disabled = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
+							hidden = function() return not E.db.unitframe.units['player']['classbar'].detachFromFrame end,
+							args = {
+								useCustomStrata = {
+									order = 1,
+									type = "toggle",
+									name = L["Use Custom Strata"],
+								},
+								frameStrata = {
+									order = 2,
+									type = "select",
+									name = L["Frame Strata"],
+									values = {
+										["BACKGROUND"] = "BACKGROUND",
+										["LOW"] = "LOW",
+										["MEDIUM"] = "MEDIUM",
+										["HIGH"] = "HIGH",
+										["DIALOG"] = "DIALOG",
+										["TOOLTIP"] = "TOOLTIP",
+									},
+								},
+								spacer = {
+									order = 3,
+									type = "description",
+									name = "",
+								},
+								useCustomLevel = {
+									order = 4,
+									type = "toggle",
+									name = L["Use Custom Level"],
+								},
+								frameLevel = {
+									order = 5,
+									type = "range",
+									name = L["Frame Level"],
+									min = 2, max = 128, step = 1,
+								},
+							},
 						},
 					},
+				},
+			},
+		},
+		RestIcon = {
+			order = 430,
+			type = 'group',
+			name = L["Rest Icon"],
+			get = function(info) return E.db.unitframe.units['player']['RestIcon'][ info[#info] ] end,
+			set = function(info, value) E.db.unitframe.units['player']['RestIcon'][ info[#info] ] = value; UF:CreateAndUpdateUF('player'); UF:TestingDisplay_RestingIndicator(ElvUF_Player); end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["Rest Icon"],
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"],
+				},
+				defaultColor = {
+					order = 3,
+					type = "toggle",
+					name = L["Default Color"],
+				},
+				color = {
+					order = 4,
+					type = "color",
+					name = COLOR,
+					hasAlpha = true,
+					disabled = function()
+						return E.db.unitframe.units['player']['RestIcon'].defaultColor
+					end,
+					get = function()
+						local c = E.db.unitframe.units['player']['RestIcon'].color
+						local d = P.unitframe.units['player']['RestIcon'].color
+						return c.r, c.g, c.b, c.a, d.r, d.g, d.b, d.a
+					end,
+					set = function(_, r, g, b, a)
+						local c = E.db.unitframe.units['player']['RestIcon'].color
+						c.r, c.g, c.b, c.a = r, g, b, a
+						UF:CreateAndUpdateUF('player');
+						UF:TestingDisplay_RestingIndicator(ElvUF_Player);
+					end,
+				},
+				size = {
+					order = 5,
+					type = "range",
+					name = L["Size"],
+					min = 10, max = 60, step = 1,
+				},
+				xOffset = {
+					order = 6,
+					type = "range",
+					name = L["X-Offset"],
+					min = -100, max = 100, step = 1,
+				},
+				yOffset = {
+					order = 7,
+					type = "range",
+					name = L["Y-Offset"],
+					min = -100, max = 100, step = 1,
+				},
+				spacer2 = {
+					order = 8,
+					type = "description",
+					name = " ",
+				},
+				anchorPoint = {
+					order = 9,
+					type = "select",
+					name = L["Anchor Point"],
+					values = positionValues,
+				},
+				texture = {
+					order = 10,
+					type = "select",
+					sortByValue = true,
+					name = L["Texture"],
+					values = {
+						["CUSTOM"] = CUSTOM,
+						["DEFAULT"] = DEFAULT,
+						["RESTING"] = [[|TInterface\AddOns\ElvUI\media\textures\resting:14|t]],
+						["RESTING1"] = [[|TInterface\AddOns\ElvUI\media\textures\resting1:14|t]],
+					},
+				},
+				customTexture = {
+					type = 'input',
+					order = 11,
+					customWidth = 250,
+					name = L["Custom Texture"],
+					disabled = function()
+						return E.db.unitframe.units['player']['RestIcon'].texture ~= "CUSTOM"
+					end,
+					set = function(_, value)
+						E.db.unitframe.units['player']['RestIcon'].customTexture = (value and (not value:match("^%s-$")) and value) or nil
+						UF:CreateAndUpdateUF('player');
+						UF:TestingDisplay_RestingIndicator(ElvUF_Player);
+					end
+				},
+			},
+		},
+		CombatIcon = {
+			order = 440,
+			type = 'group',
+			name = L["Combat Icon"],
+			get = function(info) return E.db.unitframe.units['player']['CombatIcon'][ info[#info] ] end,
+			set = function(info, value) E.db.unitframe.units['player']['CombatIcon'][ info[#info] ] = value; UF:CreateAndUpdateUF('player'); UF:TestingDisplay_CombatIndicator(ElvUF_Player); end,
+			args = {
+				header = {
+					order = 1,
+					type = "header",
+					name = L["Combat Icon"],
+				},
+				enable = {
+					order = 2,
+					type = "toggle",
+					name = L["Enable"],
+				},
+				defaultColor = {
+					order = 3,
+					type = "toggle",
+					name = L["Default Color"],
+				},
+				color = {
+					order = 4,
+					type = "color",
+					name = COLOR,
+					hasAlpha = true,
+					disabled = function()
+						return E.db.unitframe.units['player']['CombatIcon'].defaultColor
+					end,
+					get = function()
+						local c = E.db.unitframe.units['player']['CombatIcon'].color
+						local d = P.unitframe.units['player']['CombatIcon'].color
+						return c.r, c.g, c.b, c.a, d.r, d.g, d.b, d.a
+					end,
+					set = function(_, r, g, b, a)
+						local c = E.db.unitframe.units['player']['CombatIcon'].color
+						c.r, c.g, c.b, c.a = r, g, b, a
+						UF:CreateAndUpdateUF('player');
+						UF:TestingDisplay_CombatIndicator(ElvUF_Player);
+					end,
+				},
+				size = {
+					order = 5,
+					type = "range",
+					name = L["Size"],
+					min = 10, max = 60, step = 1,
+				},
+				xOffset = {
+					order = 6,
+					type = "range",
+					name = L["X-Offset"],
+					min = -100, max = 100, step = 1,
+				},
+				yOffset = {
+					order = 7,
+					type = "range",
+					name = L["Y-Offset"],
+					min = -100, max = 100, step = 1,
+				},
+				spacer2 = {
+					order = 8,
+					type = "description",
+					name = " ",
+				},
+				anchorPoint = {
+					order = 9,
+					type = "select",
+					name = L["Anchor Point"],
+					values = positionValues,
+				},
+				texture = {
+					order = 10,
+					type = "select",
+					sortByValue = true,
+					name = L["Texture"],
+					values = {
+						["CUSTOM"] = CUSTOM,
+						["DEFAULT"] = DEFAULT,
+						["COMBAT"] = [[|TInterface\AddOns\ElvUI\media\textures\combat:14|t]],
+						["PLATINUM"] = [[|TInterface\Challenges\ChallengeMode_Medal_Platinum:14|t]],
+						["ATTACK"] = [[|TInterface\CURSOR\Attack:14|t]],
+						["ALERT"] = [[|TInterface\DialogFrame\UI-Dialog-Icon-AlertNew:14|t]],
+						["ALERT2"] = [[|TInterface\OptionsFrame\UI-OptionsFrame-NewFeatureIcon:14|t]],
+						["ARTHAS"] =[[|TInterface\LFGFRAME\UI-LFR-PORTRAIT:14|t]],
+						["SKULL"] = [[|TInterface\LootFrame\LootPanel-Icon:14|t]],
+					},
+				},
+				customTexture = {
+					type = 'input',
+					order = 11,
+					customWidth = 250,
+					name = L["Custom Texture"],
+					disabled = function()
+						return E.db.unitframe.units['player']['CombatIcon'].texture ~= "CUSTOM"
+					end,
+					set = function(_, value)
+						E.db.unitframe.units['player']['CombatIcon'].customTexture = (value and (not value:match("^%s-$")) and value) or nil
+						UF:CreateAndUpdateUF('player');
+						UF:TestingDisplay_CombatIndicator(ElvUF_Player);
+					end
 				},
 			},
 		},

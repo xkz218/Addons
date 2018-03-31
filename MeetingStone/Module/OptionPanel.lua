@@ -138,6 +138,12 @@ function SettingPanel:OnInitialize()
                 width = 'full',
                 order = order(),
             },
+            -- spamChar = {
+            --     type = 'toggle',
+            --     name = L['非字母数字中文字符过滤'],
+            --     width = 'full',
+            --     order = order(),
+            -- },
             spamLengthEnabled = {
                 type = 'toggle',
                 name = L['活动说明字数过滤（超过设定字数的活动将被屏蔽）'],
@@ -150,7 +156,7 @@ function SettingPanel:OnInitialize()
                 width = 'full',
                 order = order(),
                 min = 10,
-                max = 30,
+                max = MAX_MEETINGSTONE_SUMMARY_LETTERS,
                 step = 1,
                 disabled = function()
                     return not self.db.profile.settings.spamLengthEnabled
@@ -183,7 +189,7 @@ function SettingPanel:OnInitialize()
     local filterGroup = createGroup('MeetingStone Filters', filters)
     filterGroup.frame:SetPoint('TOPRIGHT', -10, -10)
     filterGroup.frame:SetPoint('TOPLEFT', self, 'TOP', 0, -10)
-    filterGroup.frame:SetHeight(160)
+    filterGroup.frame:SetHeight(180)
 
 
     do -- spam word.

@@ -139,6 +139,8 @@ L["Can't detected euiscript addon, please reenable this addon!."] = '不能檢�
 
 --General
 do
+	L["Chat Bubble Names"] = '聊天泡泡名字'
+	L["Display the name of the unit on the chat bubble. This will not work if backdrop is disabled or when you are in an instance."] = "在聊天泡泡中顯示玩家名稱.不顯示在背景被禁用或在副本中."
 	L["Class Totems"] = "職業圖騰條"
 	L["Enables the ElvUI Raid Control panel."] = "啟用EUI的團隊控制台";
 	L["Apply Font To All"] = "應用字體";
@@ -383,6 +385,7 @@ end
 
 --Aura
 do
+	L["Duration Font Size"] = '持續時間字型大小'
 	L["aura time offsetX"] = "時間文字X偏移";
 	L["aura time offsetY"] = "時間文字Y偏移";
 	L["aura count offsetX"] = "層數文字X偏移";
@@ -886,6 +889,7 @@ L['ABOVE_THREAT_FORMAT'] = '%s: %.0f%% [%.0f%% above |cff%02x%02x%02x%s|r]'
 
 --UNITFRAMES
 do
+	L["Vertical Fill Direction"] = "垂直填充方向"
 	L["toggle for Vehicle"] = "載具切換"
 	L["toggle for Vehicle desc."] = "當用戶進入載具時切換框體為載具單元而不是玩家自身."
 	L["Used as RaidDebuff Indicator"] = '使用副本DEBUFF指示器';
@@ -1843,6 +1847,8 @@ end
 
 --Chat
 do
+	L["Show BattleTag Names"] = '顯示戰網昵稱'
+	L["Show BattleTag names instead of RealID names inside of chat."] = '顯示戰網昵稱在聊天框中';
 	L["Copy Chat Lines"] = "複製聊天行"
 	L["Adds an arrow infront of the chat lines to copy the entire line."] = "點擊前端的箭頭將複製當前行"
 	L["chat Item Level"] = "聊天物品等級"

@@ -2,7 +2,7 @@
 ## Title: |cffC495DDEUI|r |cffFFFFFFAddOnSkins|r
 ## Title-zhCN: |cffC495DDEUI|r美化皮肤模块
 ## Title-zhTW: |cffC495DDEUI|r美化皮膚模塊
-## Version: 3.63
+## Version: 3.70
 ## Author: Azilroka, Sortokk
 ## SavedVariables: AddOnSkinsDB
 ## OptionalDep: ElvUI, BuyEmAll, DSM, Tukui

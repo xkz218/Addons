@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Rings", "DBM-DMF")
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 17112 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 17247 $"):sub(12, -3))
 mod:SetZone()
 
 mod:RegisterCombat("combat")
@@ -15,11 +15,9 @@ mod.noStatistics = true
 
 local warnRings		= mod:NewCountAnnounce(170823, 1, nil, false)--Spammy, so off by default, but requested because blizz bug, ring does not always make sound when passing through so this alert can serve as confirmation sound
 
-local timerGame		= mod:NewBuffActiveTimer(10, 170820)
+local timerGame		= mod:NewBuffActiveTimer(10, 170820, nil, nil, nil, 5)
 
 local countdownGame	= mod:NewCountdownFades(10, 170820)
-
-mod:RemoveOption("HealthFrame")
 
 local wingsName = DBM:GetSpellInfo(170820)
 local UnitBuff = UnitBuff
